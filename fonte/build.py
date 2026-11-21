@@ -269,6 +269,7 @@ def pagina_curso(c):
           <div class="prog hide"><div class="pbar"><i></i></div><small></small></div>
           <a class="btn cheio ir" href="/{c["slug"]}/modulo-{c["modulos"][0]["num"]}/{primeira["arq"]}">Começar o curso</a>
           <ul class="inclui"><li>✔ Aulas interativas no navegador</li><li>✔ Exercícios com correção</li><li>✔ Mini projetos no Excel de verdade</li><li>✔ Sem cadastro</li></ul>
+          <div class="apoio-cartao"><p><b>Gratuito para todos.</b> Este curso continua aberto graças a quem pode contribuir. Se ele te ajudar, apoie com qualquer valor.</p><a class="btn-apoio" href="/apoie">♥ Apoiar com Pix</a></div>
         </div>
       </div>
     </div>
@@ -281,7 +282,6 @@ def pagina_curso(c):
       <div class="card"><h2>Para quem é</h2><ul>{lista(c["para_quem"])}</ul></div>
       <div class="card"><h2>Requisitos</h2><ul>{lista(c["requisitos"])}</ul></div>
     </section>
-    <section class="card apoie-faixa"><div><h2>Este curso é gratuito para todos</h2><p>E continua assim graças a quem pode contribuir. Se ele te ajudar, apoie com qualquer valor.</p></div><a class="btn sec" href="/apoie">♥ Apoie o Hub</a></section>
     <section><h2>Como funciona cada aula</h2>
       <div class="fases4">
         <div class="card"><b>1 · Aprenda</b><h3>Veja passo a passo</h3><p>Uma animação mostra cada passo numa tela que imita o Excel, com explicação em texto.</p></div>

@@ -149,3 +149,8 @@ h2{font-size:26px;letter-spacing:-.02em;margin:0 0 6px}
 .so-cel{display:none}
 @media (max-width:760px){.topo nav{display:flex;margin-left:auto}.topo nav a:not(.apoie){display:none}.topo .btn.peq{margin-left:10px}.so-cel{display:inline}}
 @media (max-width:760px){.topo .btn.peq{display:none}.topo nav a{white-space:nowrap}.marca-hub small{white-space:nowrap}}
+.apoio-cartao{border-top:1px solid var(--line);padding-top:12px;display:grid;gap:10px}
+.apoio-cartao p{margin:0;font-size:13.5px;color:var(--muted);line-height:1.5}
+.apoio-cartao p b{color:var(--ink)}
+.btn-apoio{display:block;text-align:center;border:2px solid var(--sol);color:#b45309;background:#fff8eb;border-radius:10px;padding:9px 14px;font-weight:700;text-decoration:none}
+.btn-apoio:hover{background:var(--sol);color:#fff}

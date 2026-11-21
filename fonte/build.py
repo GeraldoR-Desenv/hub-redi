@@ -20,6 +20,8 @@ SITE_URL = "https://hub-redi.netlify.app"  # trocar quando houver domínio próp
 FONTES = '<link rel="preconnect" href="https://fonts.googleapis.com">\n<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@500;700&display=swap" rel="stylesheet">'
 LOGO = (FONTE / "logo.svg").read_text(encoding="utf-8")
 SITE_CSS = (FONTE / "site.css").read_text(encoding="utf-8")
+PIX_QR = (FONTE / "pix-qr.svg").read_text(encoding="utf-8")
+PIX_COPIA = (FONTE / "pix-copia-e-cola.txt").read_text(encoding="utf-8").strip()
 AVISO_MARCA = "Excel é marca registrada da Microsoft. Os cursos do Hub ReDi são independentes e não têm vínculo com a Microsoft."
 
 # =====================================================================
@@ -80,6 +82,7 @@ PERGUNTAS = [
     ("Preciso ter o Excel instalado?", "Não. As aulas funcionam no navegador, com uma tela que imita o Excel. Para praticar no programa de verdade, usamos o Excel online, que é gratuito com uma conta Microsoft."),
     ("Funciona no celular?", "Sim, as aulas abrem no celular. Para os exercícios em que você digita e arrasta, o computador é mais confortável."),
     ("Meu progresso fica salvo?", "Fica guardado no navegador que você usou. Se trocar de aparelho ou limpar os dados do navegador, as marcações de aulas concluídas recomeçam (o conteúdo continua todo disponível)."),
+    ("Como posso ajudar o Hub ReDi?", "Contando para quem precisa aprender e, se puder, com uma doação de qualquer valor pelo Pix, na página Apoie o Hub. A doação é voluntária: o conteúdo continua gratuito para todos."),
     ("Tem certificado?", "Ainda não. Por enquanto o foco é aprender de verdade: cada módulo termina com um mini projeto para você provar a si mesmo que sabe."),
 ]
 
@@ -117,7 +120,7 @@ def cabeca(titulo, desc, caminho, css, extra=""):
 def topo(ativo=""):
     return f'''<header class="topo"><div class="wrap">
   <a class="marca-hub" href="/">{LOGO}<span><b>Hub ReDi</b><small>de Conhecimentos</small></span></a>
-  <nav><a href="/#cursos"{' class="on"' if ativo == "cursos" else ""}>Cursos</a><a href="/#como">Como funciona</a><a href="/#sobre">Sobre</a></nav>
+  <nav><a href="/#cursos"{' class="on"' if ativo == "cursos" else ""}>Cursos</a><a href="/#como">Como funciona</a><a href="/#sobre">Sobre</a><a class="apoie" href="/apoie">♥ Apoie o Hub</a></nav>
   <a class="btn peq" href="/#cursos">Começar grátis</a>
 </div></header>'''
 
@@ -126,7 +129,7 @@ RODAPE = f'''<footer class="rodape"><div class="wrap">
   <div class="cols">
     <div><a class="marca-hub" href="/">{LOGO}<span><b>Hub ReDi</b><small>de Conhecimentos</small></span></a><p>Conhecimento gratuito, em português, para quem está começando do zero.</p></div>
     <div><h4>Cursos</h4>{"".join(f'<a href="/{c["slug"]}/">{c["nome"]}</a>' for c in CURSOS)}</div>
-    <div><h4>Hub ReDi</h4><a href="/#sobre">Sobre</a><a href="/#como">Como funciona</a><a href="/#perguntas">Perguntas frequentes</a></div>
+    <div><h4>Hub ReDi</h4><a href="/apoie">Apoie o Hub</a><a href="/#sobre">Sobre</a><a href="/#como">Como funciona</a><a href="/#perguntas">Perguntas frequentes</a></div>
     <div><h4>Legal</h4><a href="/termos">Termos de uso</a><a href="/privacidade">Privacidade</a></div>
   </div>
   <p class="mini">© 2026 Hub ReDi de Conhecimentos · {AVISO_MARCA}</p>
@@ -209,6 +212,13 @@ def pagina_portal():
     </div>
   </div></section>
 
+  <section id="apoie"><div class="wrap">
+    <div class="card apoie-faixa">
+      <div><h2>Conhecimento gratuito também tem custo</h2><p>Cada aula leva horas de preparo, programação, revisão e testes. Se o Hub ReDi te ajudou, considere apoiar com uma doação de qualquer valor. Assim mais gente continua aprendendo de graça.</p></div>
+      <a class="btn" href="/apoie">♥ Quero apoiar</a>
+    </div>
+  </div></section>
+
   <section id="perguntas"><div class="wrap">
     <h2>Perguntas frequentes</h2>
     <div class="faq">{faq}</div>
@@ -271,6 +281,7 @@ def pagina_curso(c):
       <div class="card"><h2>Para quem é</h2><ul>{lista(c["para_quem"])}</ul></div>
       <div class="card"><h2>Requisitos</h2><ul>{lista(c["requisitos"])}</ul></div>
     </section>
+    <section class="card apoie-faixa"><div><h2>Este curso é gratuito para todos</h2><p>E continua assim graças a quem pode contribuir. Se ele te ajudar, apoie com qualquer valor.</p></div><a class="btn sec" href="/apoie">♥ Apoie o Hub</a></section>
     <section><h2>Como funciona cada aula</h2>
       <div class="fases4">
         <div class="card"><b>1 · Aprenda</b><h3>Veja passo a passo</h3><p>Uma animação mostra cada passo numa tela que imita o Excel, com explicação em texto.</p></div>
@@ -318,7 +329,7 @@ def paginas_aulas(c):
                + f'<a class="meio" href="/{c["slug"]}/">Conteúdo do curso {c["nome"]}</a>'
                + (f'<a href="{url(*prox)}">{prox[1]["num"]} · {prox[1]["titulo"]} ▶</a>' if prox else f'<a href="/{c["slug"]}/">Voltar ao curso ▶</a>')
                + "</div></nav>")
-        rodape = nav + f'\n<p class="marca">{AVISO_MARCA}</p>'
+        rodape = nav + f'\n<p class="marca">Gostou da aula? <a href="/apoie">Apoie o Hub ReDi</a> com uma doação de qualquer valor e ajude a manter o conhecimento gratuito.<br>{AVISO_MARCA}</p>'
         id_js = f'<script>window.CAPSULA_ID = "{c["slug"]}/{a["arq"]}";</script>\n'
         logo = f'<div class="logo"><a href="/{c["slug"]}/">Excel <span>do Zero</span></a></div>'
         if a.get("js"):
@@ -350,7 +361,8 @@ def paginas_aulas(c):
 
 
 def pagina_simples(arq, titulo, desc, caminho, conteudo):
-    corpo = f'{topo()}\n<main class="wrap texto">{conteudo}</main>\n{RODAPE}'
+    largo = " largo" if arq == "apoie.html" else ""
+    corpo = f'{topo()}\n<main class="wrap texto{largo}">{conteudo}</main>\n{RODAPE}'
     html = cabeca(titulo, desc, caminho, SITE_CSS) + "<body>\n" + corpo + "\n</body>\n</html>\n"
     (RAIZ / arq).write_text(html, encoding="utf-8")
 
@@ -361,19 +373,50 @@ def paginas_institucionais():
 <h2>Resumo</h2><p>O Hub ReDi <b>não pede cadastro</b> e <b>não coleta dados pessoais</b> de quem estuda aqui.</p>
 <h2>O que fica guardado no seu navegador</h2><p>Para mostrar quais aulas você já concluiu e o progresso dos mini projetos, o site guarda essas marcações no armazenamento local do <b>seu próprio navegador</b>. Essas informações não são enviadas para nós nem para ninguém. Você pode apagá-las a qualquer momento limpando os dados de navegação.</p>
 <h2>Serviços de terceiros</h2><p>As páginas carregam fontes de texto do Google Fonts, e o site é hospedado pela Netlify. Como em qualquer site, esses serviços recebem informações técnicas da conexão (como o endereço IP) para entregar os arquivos.</p>
-<h2>Mudanças</h2><p>Se um dia o site passar a usar outros serviços (por exemplo, medição de audiência ou doações), esta página será atualizada antes.</p>''')
+<h2>Doações</h2><p>As doações são feitas por Pix, diretamente no aplicativo do seu banco. O site não processa pagamentos e não recebe nenhum dado bancário seu.</p>
+<h2>Mudanças</h2><p>Se um dia o site passar a usar outros serviços (por exemplo, medição de audiência), esta página será atualizada antes.</p>''')
     pagina_simples("termos.html", "Termos de uso | Hub ReDi de Conhecimentos", "Termos de uso do Hub ReDi de Conhecimentos.", "/termos", f'''
 <h1>Termos de uso</h1><p class="sub">Última atualização: novembro de 2026.</p>
 <h2>Uso gratuito</h2><p>Os cursos do Hub ReDi são gratuitos e podem ser usados livremente para estudo pessoal.</p>
 <h2>Conteúdo</h2><p>O conteúdo é produzido com cuidado, mas pode conter erros ou ficar desatualizado conforme os programas mudam. Se encontrar algo errado, avise: a correção ajuda todo mundo.</p>
 <h2>Marcas</h2><p>{AVISO_MARCA} As telas dos cursos são simulações criadas para fins educacionais.</p>
 <h2>Mudanças</h2><p>Estes termos podem ser atualizados. A data no topo da página indica a versão em vigor.</p>''')
+    pagina_simples("apoie.html", "Apoie o Hub ReDi | Doe qualquer valor e mantenha o conhecimento gratuito", "O Hub ReDi oferece cursos gratuitos para quem está começando do zero. Apoie com uma doação de qualquer valor pelo Pix.", "/apoie", f'''
+<h1>Apoie o Hub ReDi</h1>
+<p class="sub">Conhecimento gratuito para todos, mantido por quem pode contribuir. <a class="so-cel" href="#doar">Ir direto para o Pix ↓</a></p>
+<div class="apoie-grade">
+  <div>
+    <h2>Por que os cursos são gratuitos</h2>
+    <p>O Hub ReDi existe para <b>democratizar o conhecimento</b>. Aprender Excel, e outras ferramentas que abrem portas no trabalho, não deveria depender de quanto alguém pode pagar. Por isso não cobramos, não pedimos cadastro e não escondemos conteúdo atrás de pagamento.</p>
+    <h2>O que custa manter o Hub</h2>
+    <ul class="custos">
+      <li><b>Tempo de produção:</b> cada aula de poucos minutos leva muitas horas de planejamento, programação da tela interativa, revisão por quem entende de Excel e testes.</li>
+      <li><b>Estrutura:</b> hoje usamos ferramentas e hospedagem em planos gratuitos. Conforme o Hub cresce, entram custos como domínio próprio, planos pagos de hospedagem e ferramentas de produção.</li>
+      <li><b>Novos conteúdos:</b> novos módulos, novos cursos e tutoriais em vídeo.</li>
+    </ul>
+    <h2>Para onde vai a sua doação</h2>
+    <p>Para manter o site no ar e produzir mais aulas gratuitas. A doação é <b>voluntária</b>: doando ou não, todo o conteúdo continua aberto para você e para todos.</p>
+  </div>
+  <div class="card pix" id="doar">
+    <h2>Doe qualquer valor pelo Pix</h2>
+    <p class="mini">Abra o app do seu banco, escolha <b>Pix › Ler QR Code</b> e aponte a câmera.</p>
+    <div class="qr">{PIX_QR}</div>
+    <p class="mini">Está no celular? Use o <b>Pix copia e cola</b>:</p>
+    <textarea id="pixcod" readonly rows="5" aria-label="Código Pix copia e cola">{PIX_COPIA}</textarea>
+    <button class="btn cheio" id="copiar" type="button">Copiar código Pix</button>
+    <p class="mini" id="copiado" aria-live="polite"></p>
+    <p class="mini">O valor é você quem escolhe. Qualquer quantia ajuda. 💙</p>
+  </div>
+</div>
+<script>
+document.getElementById("copiar").onclick=function(){{var t=document.getElementById("pixcod"),ok=function(){{document.getElementById("copiado").textContent="Código copiado! Agora cole no app do seu banco, em Pix › Copia e cola.";}};if(navigator.clipboard&&navigator.clipboard.writeText){{navigator.clipboard.writeText(t.value).then(ok,function(){{t.select();document.execCommand("copy");ok();}});}}else{{t.select();document.execCommand("copy");ok();}}}};
+</script>''')
     pagina_simples("404.html", "Página não encontrada | Hub ReDi de Conhecimentos", "Página não encontrada.", "/404", '''
 <h1>Ops, essa página não existe.</h1><p class="sub">O endereço pode ter mudado ou ter sido digitado errado.</p><p><a class="btn" href="/">Ir para a página inicial</a> <a class="btn sec" href="/excel-do-zero/">Ver o curso Excel do Zero</a></p>''')
 
 
 def seo():
-    urls = ["/", "/privacidade", "/termos"] + [f'/{c["slug"]}/' for c in CURSOS] + [
+    urls = ["/", "/apoie", "/privacidade", "/termos"] + [f'/{c["slug"]}/' for c in CURSOS] + [
         f'/{c["slug"]}/modulo-{m["num"]}/{a["arq"]}' for c in CURSOS for m in c["modulos"] for a in m["aulas"]]
     (RAIZ / "sitemap.xml").write_text('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
                                        + "".join(f"  <url><loc>{SITE_URL}{u}</loc></url>\n" for u in urls) + "</urlset>\n", encoding="utf-8")

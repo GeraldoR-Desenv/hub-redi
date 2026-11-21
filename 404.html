@@ -147,13 +147,32 @@ h2{font-size:26px;letter-spacing:-.02em;margin:0 0 6px}
 .texto{max-width:780px;padding-top:30px;padding-bottom:30px}
 .texto h1{font-size:32px;margin:0 0 4px}
 .texto h2{font-size:20px;margin:24px 0 6px}
+/* ---------- apoie ---------- */
+.topo nav a.apoie{color:#c2410c;font-weight:600}
+.apoie-faixa{display:flex;gap:20px;align-items:center;justify-content:space-between;flex-wrap:wrap;border-left:5px solid var(--sol)}
+.apoie-faixa h2{margin:0 0 4px}
+.apoie-faixa p{margin:0;color:var(--muted);max-width:680px}
+.apoie-grade{display:grid;grid-template-columns:1.4fr 1fr;gap:28px;align-items:start}
+@media (max-width:820px){.apoie-grade{grid-template-columns:1fr}}
+.custos{padding-left:20px}.custos li{margin:8px 0}
+.pix{text-align:center;border-top:5px solid var(--sol)}
+.pix h2{margin-top:4px}
+.pix .qr{width:230px;max-width:80%;margin:10px auto;padding:10px;background:#fff;border:1px solid var(--line);border-radius:12px}
+.pix .qr svg{display:block;width:100%;height:auto}
+.pix textarea{width:100%;font:12px "JetBrains Mono",monospace;padding:8px;border:1px solid var(--line);border-radius:8px;resize:none;word-break:break-all;background:var(--soft)}
+.pix .mini{font-size:14px;color:var(--muted);margin:8px 0}
+.texto.largo{max-width:1040px}
+.marca a{color:var(--acc)}
+.so-cel{display:none}
+@media (max-width:760px){.topo nav{display:flex;margin-left:auto}.topo nav a:not(.apoie){display:none}.topo .btn.peq{margin-left:10px}.so-cel{display:inline}}
+@media (max-width:760px){.topo .btn.peq{display:none}.topo nav a{white-space:nowrap}.marca-hub small{white-space:nowrap}}
 </style>
 </head>
 <body>
 <header class="topo"><div class="wrap">
   <a class="marca-hub" href="/"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="40" height="40" role="img" aria-label="Hub ReDi"><g stroke="#1d5fbf" stroke-width="3" stroke-linecap="round"><line x1="24" y1="24" x2="9" y2="11"/><line x1="24" y1="24" x2="40" y2="9"/><line x1="24" y1="24" x2="41" y2="36"/><line x1="24" y1="24" x2="8" y2="38"/></g><g fill="#1d5fbf"><circle cx="9" cy="11" r="5"/><circle cx="40" cy="9" r="4"/><circle cx="41" cy="36" r="5"/><circle cx="8" cy="38" r="4"/></g><circle cx="24" cy="24" r="8" fill="#f5a524" stroke="#fff" stroke-width="2.5"/></svg>
 <span><b>Hub ReDi</b><small>de Conhecimentos</small></span></a>
-  <nav><a href="/#cursos">Cursos</a><a href="/#como">Como funciona</a><a href="/#sobre">Sobre</a></nav>
+  <nav><a href="/#cursos">Cursos</a><a href="/#como">Como funciona</a><a href="/#sobre">Sobre</a><a class="apoie" href="/apoie">♥ Apoie o Hub</a></nav>
   <a class="btn peq" href="/#cursos">Começar grátis</a>
 </div></header>
 <main class="wrap texto">
@@ -163,7 +182,7 @@ h2{font-size:26px;letter-spacing:-.02em;margin:0 0 6px}
     <div><a class="marca-hub" href="/"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="40" height="40" role="img" aria-label="Hub ReDi"><g stroke="#1d5fbf" stroke-width="3" stroke-linecap="round"><line x1="24" y1="24" x2="9" y2="11"/><line x1="24" y1="24" x2="40" y2="9"/><line x1="24" y1="24" x2="41" y2="36"/><line x1="24" y1="24" x2="8" y2="38"/></g><g fill="#1d5fbf"><circle cx="9" cy="11" r="5"/><circle cx="40" cy="9" r="4"/><circle cx="41" cy="36" r="5"/><circle cx="8" cy="38" r="4"/></g><circle cx="24" cy="24" r="8" fill="#f5a524" stroke="#fff" stroke-width="2.5"/></svg>
 <span><b>Hub ReDi</b><small>de Conhecimentos</small></span></a><p>Conhecimento gratuito, em português, para quem está começando do zero.</p></div>
     <div><h4>Cursos</h4><a href="/excel-do-zero/">Excel do Zero</a></div>
-    <div><h4>Hub ReDi</h4><a href="/#sobre">Sobre</a><a href="/#como">Como funciona</a><a href="/#perguntas">Perguntas frequentes</a></div>
+    <div><h4>Hub ReDi</h4><a href="/apoie">Apoie o Hub</a><a href="/#sobre">Sobre</a><a href="/#como">Como funciona</a><a href="/#perguntas">Perguntas frequentes</a></div>
     <div><h4>Legal</h4><a href="/termos">Termos de uso</a><a href="/privacidade">Privacidade</a></div>
   </div>
   <p class="mini">© 2026 Hub ReDi de Conhecimentos · Excel é marca registrada da Microsoft. Os cursos do Hub ReDi são independentes e não têm vínculo com a Microsoft.</p>

@@ -1,0 +1,1045 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>0.3 · Tour pela tela | Excel do Zero – Hub ReDi</title>
+<meta name="description" content="Conheça a tela do Excel: Faixa de Opções, Caixa de Nome, Barra de Fórmulas, grade, abas e barra de status. Aula grátis para iniciantes.">
+<link rel="canonical" href="https://hub-redi.netlify.app/excel-do-zero/modulo-0/0-3-tour-pela-tela">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Hub ReDi de Conhecimentos">
+<meta property="og:title" content="0.3 · Tour pela tela | Excel do Zero – Hub ReDi">
+<meta property="og:description" content="Conheça a tela do Excel: Faixa de Opções, Caixa de Nome, Barra de Fórmulas, grade, abas e barra de status. Aula grátis para iniciantes.">
+<meta property="og:url" content="https://hub-redi.netlify.app/excel-do-zero/modulo-0/0-3-tour-pela-tela">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3f6fa; --card:#fff; --ink:#1a1f29; --muted:#5a6475; --line:#dde3ec; --soft:#edf2f8;
+  --acc:#1d5fbf; --acc-2:#164b98; --acc-soft:#e2ecfa; --ok:#15803d; --ok-soft:#e5f6eb; --bad:#b42318; --bad-soft:#fdecea;
+  --hl:#e8590c;
+  /* cores da janela simulada (imitam o Excel online) */
+  --xg:#107c41; --xg-soft:#d3e8da; --xline:#e1e4e8; --xgrid:#e2e3e3; --xhdr:#f3f3f3;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15.5px/1.55 Inter,system-ui,sans-serif}
+code,.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+code{background:var(--soft);padding:1px 6px;border-radius:5px;font-size:.9em}
+kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;font-size:.85em;background:#fff}
+header{background:var(--card);border-bottom:1px solid var(--line)}
+.top{max-width:1040px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{font-weight:700;font-size:17px;letter-spacing:-.01em}
+.logo span{color:var(--acc)}
+.crumb{color:var(--muted);font-size:14px}
+.fases{max-width:1040px;margin:0 auto;padding:0 20px 12px;display:flex;gap:6px;flex-wrap:wrap}
+.fase{flex:1;min-width:150px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:7px 12px;cursor:pointer;text-align:left;font:500 13.5px Inter,sans-serif;color:var(--muted)}
+.fase b{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.fase.on{border-color:var(--acc);color:var(--ink);box-shadow:inset 0 -3px 0 var(--acc)}
+.fase.done b::after{content:" ✓";color:var(--ok)}
+main{max-width:1040px;margin:0 auto;padding:22px 20px 70px}
+h1{font-size:25px;margin:0 0 4px;letter-spacing:-.02em}
+.lead{color:var(--muted);margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.btn{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 16px;border-radius:9px;font:600 14px Inter,sans-serif;cursor:pointer}
+.btn:hover{border-color:var(--muted)}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+.btn.pri:hover{background:var(--acc-2)}
+.btn:disabled{opacity:.45;cursor:default}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.hint{color:var(--muted);font-size:13px}
+.passo-n{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--acc)}
+.dest{background:var(--acc-soft);padding:0 5px;border-radius:5px;font-weight:600}
+.fbk{margin-top:12px;padding:11px 14px;border-radius:10px;font-size:14.5px}
+.fbk.ok{background:var(--ok-soft);border:1px solid #9ed8b2}
+.fbk.bad{background:var(--bad-soft);border:1px solid #f1b0a9}
+.fbk.info{background:var(--soft);border:1px solid var(--line)}
+.fbk > b:first-child{display:block;margin-bottom:2px}
+.enun{font-size:16px;margin:2px 0 10px}
+.ops{display:grid;gap:7px;margin-top:8px}
+.op{text-align:left;padding:10px 13px;border:1px solid var(--line);border-radius:9px;background:#fff;cursor:pointer;font:14.5px Inter,sans-serif;color:var(--ink)}
+.op:hover{border-color:var(--acc)}
+.op.right{border-color:var(--ok);background:var(--ok-soft)} .op.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.inp{font:15px Inter,sans-serif;padding:8px 12px;border:1px solid var(--line);border-radius:9px;width:160px}
+.inp:focus{outline:2px solid var(--acc);border-color:var(--acc)}
+.resumo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:760px){.resumo{grid-template-columns:1fr}}
+.resumo .card h3{margin:0 0 6px;font-size:15px}
+.resumo ul{margin:0;padding-left:20px}
+.big{font-size:22px;font-weight:700}
+.qs{display:grid;gap:14px}
+.qs .q + .q{border-top:1px solid var(--line);padding-top:14px}
+
+/* ---------- narração ---------- */
+.narr{margin-bottom:14px}
+.narr .txt{font-size:16.5px;line-height:1.6;margin:8px 0 14px;min-height:5.2em}
+.dots{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.dots i{width:22px;height:5px;border-radius:5px;background:var(--line)}
+.dots i.v{background:var(--acc)} .dots i.at{background:var(--acc);opacity:.45}
+
+/* ---------- tarefas ---------- */
+.tarefas{margin:6px 0 12px;padding-left:22px}
+.tarefas li{margin:5px 0;color:#9aa3b2}
+.tarefas li.atual{color:var(--ink);font-weight:500}
+.tarefas li.ok{color:var(--ok)}
+.tarefas li.ok::marker{content:"✓  "}
+
+/* =============== janela simulada do Excel online =============== */
+.xo{--z:1;border:1px solid #c8cdd3;border-radius:10px;overflow:hidden;background:#fff;position:relative;user-select:none;-webkit-user-select:none;font-family:"Segoe UI",Inter,system-ui,sans-serif;color:#323130;box-shadow:0 6px 24px rgba(20,30,50,.08)}
+.xo-top{background:var(--xg);color:#fff;display:flex;align-items:center;gap:12px;height:40px;padding:0 14px;font-size:14px;white-space:nowrap}
+.xo-top .app{display:flex;align-items:center;gap:7px;font-weight:700}
+.xo-top .arq{font-weight:600}
+.xo-top .salvo{opacity:.8;font-size:12.5px}
+.xo-top .busca{margin-left:auto;background:rgba(255,255,255,.18);border-radius:6px;padding:4px 14px;font-size:12.5px;min-width:170px;opacity:.9}
+.xo-guias{display:flex;gap:2px;padding:0 8px;border-bottom:1px solid var(--xline);background:#fff;overflow-x:auto;scrollbar-width:none}
+.xo-guias button{appearance:none;border:0;background:none;padding:8px 10px 5px;font:13px "Segoe UI",Inter,sans-serif;color:#323130;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent}
+.xo-guias button:hover{background:#f3f3f3}
+.xo-guias button.on{color:var(--xg);font-weight:600;border-bottom-color:var(--xg)}
+.xo-botoes{display:flex;align-items:stretch;padding:6px 6px 3px;background:#fafafa;border-bottom:1px solid var(--xline);overflow-x:auto;scrollbar-width:thin}
+.grp{display:flex;flex-direction:column;align-items:center;padding:0 9px;border-right:1px solid var(--xline);flex-shrink:0}
+.grp:last-child{border-right:0}
+.grp .ctl{display:flex;gap:3px;align-items:center;flex:1}
+.grp .nm{font-size:11px;color:#605e5c;margin-top:3px;white-space:nowrap}
+.grp .col{display:flex;flex-direction:column;gap:3px}
+.grp .r{display:flex;gap:2px;align-items:center}
+.sep{width:1px;height:20px;background:var(--xline);margin:0 3px}
+.rb{appearance:none;border:1px solid transparent;background:none;border-radius:4px;min-width:27px;height:27px;display:inline-flex;align-items:center;justify-content:center;gap:5px;cursor:pointer;color:#323130;font:14px "Segoe UI",Inter,sans-serif;padding:0 4px;white-space:nowrap}
+.rb:hover{background:#e8eaed}
+.rb.on{background:var(--xg-soft);border-color:#9fcdb1}
+.rb.dd{border-color:#c8cdd3;background:#fff;justify-content:space-between;font-size:12.5px;padding:0 6px}
+.rb.dd span{font-size:9px;color:#605e5c}
+.rb.w1{width:112px} .rb.w2{width:100px}
+.rb.big{flex-direction:column;height:57px;gap:1px;font-size:11.5px;padding:2px 6px}
+.xo-fx{display:flex;height:30px;border-bottom:1px solid #d6d9dd;align-items:stretch;background:#fff}
+.xo-fx .nb{width:92px;border-right:1px solid #d6d9dd;display:flex;align-items:center;padding:0 9px;font-size:13px;cursor:text}
+.xo-fx .fxl{width:40px;border-right:1px solid #d6d9dd;display:flex;align-items:center;justify-content:center;color:#605e5c;font:italic 600 14px Georgia,serif;cursor:pointer}
+.xo-fx .fb{flex:1;display:flex;align-items:center;padding:0 10px;font-size:13.5px;white-space:pre;overflow:hidden;cursor:text}
+.xo-grade{position:relative;overflow:auto;height:264px;background:#fff}
+.gin{position:relative;display:inline-block;min-width:100%}
+table.g{border-collapse:collapse;table-layout:fixed}
+.g th{background:var(--xhdr);color:#444;font-weight:400;font-size:calc(12px * var(--z));height:calc(22px * var(--z));border:1px solid #dadce0;padding:0;cursor:pointer}
+.g th.corner{cursor:default}
+.g th[data-c].on{background:var(--xg-soft);color:#0b5a2e;font-weight:600;box-shadow:inset 0 -2px 0 var(--xg)}
+.g th[data-r].on{background:var(--xg-soft);color:#0b5a2e;font-weight:600;box-shadow:inset -2px 0 0 var(--xg)}
+.g td{height:calc(24px * var(--z));border:1px solid var(--xgrid);padding:0 5px;font-size:calc(14px * var(--z));white-space:nowrap;overflow:hidden;cursor:cell;font-family:"Aptos Narrow","Segoe UI",Inter,sans-serif;touch-action:none}
+.g td.num{text-align:right;font-variant-numeric:tabular-nums}
+.g td.neg{font-weight:700} .g td.ita{font-style:italic} .g td.sub{text-decoration:underline}
+.g td.fill{background-color:#cfe2f8}
+.g td.insel{background-image:linear-gradient(rgba(16,124,65,.10),rgba(16,124,65,.10))}
+.selbox{position:absolute;border:2px solid var(--xg);pointer-events:none;z-index:2}
+.selbox::after{content:"";position:absolute;right:-5px;bottom:-5px;width:7px;height:7px;background:var(--xg);border:1px solid #fff}
+.xo-abas{display:flex;align-items:stretch;height:32px;border-top:1px solid #d6d9dd;background:var(--xhdr);font-size:13px}
+.xo-abas .nav,.xo-abas .add{appearance:none;border:0;background:none;width:30px;cursor:pointer;color:#605e5c;font-size:13px}
+.xo-abas .add{font-size:19px;color:var(--xg);border-right:1px solid var(--xline)}
+.xo-abas .tabx{padding:0 18px;display:flex;align-items:center;cursor:pointer;border-right:1px solid var(--xline);white-space:nowrap}
+.xo-abas .tabx:hover{background:#eaeaea}
+.xo-abas .tabx.on{background:#fff;color:var(--xg);font-weight:600;box-shadow:inset 0 -3px 0 var(--xg)}
+.xo-status{display:flex;align-items:center;height:28px;background:var(--xhdr);border-top:1px solid var(--xline);font-size:12px;color:#444;padding:0 10px;gap:16px;white-space:nowrap}
+.xo-status .calc{margin-left:auto;display:flex;gap:16px}
+.xo-status .zoom{display:flex;align-items:center;gap:6px}
+.xo-status .zoom button{appearance:none;border:0;background:none;cursor:pointer;font-size:15px;color:#444;width:20px;height:20px;border-radius:4px}
+.xo-status .zoom button:hover{background:#e3e3e3}
+.xo-status .trilho{width:80px;height:3px;background:#bbb;position:relative;border-radius:2px}
+.xo-status .trilho i{position:absolute;top:-4px;width:4px;height:11px;background:#444;border-radius:1px}
+/* camada de ensino sobre a janela */
+.spot{position:absolute;z-index:20;border-radius:6px;box-shadow:0 0 0 3000px rgba(17,24,39,.5);outline:2px solid #fff;pointer-events:none;transition:left .45s,top .45s,width .45s,height .45s,opacity .3s;opacity:0}
+.spot.on{opacity:1}
+.cursor{position:absolute;width:22px;height:22px;pointer-events:none;z-index:30;transition:left .7s cubic-bezier(.4,.1,.2,1),top .7s cubic-bezier(.4,.1,.2,1),opacity .3s;left:50%;top:55%;opacity:0;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}
+.cursor.on{opacity:1}
+.anel{position:absolute;z-index:29;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;border:2px solid var(--hl);pointer-events:none;animation:anel .45s ease-out forwards}
+@keyframes anel{from{transform:scale(.3);opacity:1}to{transform:scale(1.7);opacity:0}}
+.balao{position:absolute;z-index:31;background:#1b1f29;color:#fff;font:13px/1.4 Inter,sans-serif;padding:7px 11px;border-radius:8px;max-width:280px;opacity:0;transition:opacity .25s;pointer-events:none}
+.balao.on{opacity:.96}
+.balao::after{content:"";position:absolute;left:var(--sx,16px);border:6px solid transparent}
+.balao.baixo::after{top:-12px;border-bottom-color:#1b1f29}
+.balao.cima::after{bottom:-12px;border-top-color:#1b1f29}
+.toast{position:absolute;z-index:32;left:50%;bottom:72px;transform:translateX(-50%) translateY(8px);max-width:min(520px,92%);padding:9px 14px;border-radius:9px;font:13.5px/1.45 Inter,sans-serif;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.info{background:#1b1f29;color:#fff} .toast.ok{background:var(--ok);color:#fff} .toast.bad{background:var(--bad);color:#fff}
+.guia{outline:3px solid var(--hl)!important;outline-offset:-3px;animation:guia 1.2s ease-in-out infinite}
+.g td.guia{outline:0!important;box-shadow:inset 0 0 0 3px var(--hl)}
+@keyframes guia{50%{outline-color:#ffb27a}}
+.hide{display:none!important}
+/* ---------- extras da 0.1: edição, gráfico, caderno ---------- */
+.cellin{position:absolute;z-index:3;opacity:0;border:0;padding:0;margin:0;font-size:16px;pointer-events:none}
+.g td.edit{text-align:left!important;box-shadow:inset 0 0 0 2px var(--xg);background:#fff;font-weight:400}
+.g td.flash{animation:flash 1.1s ease}
+@keyframes flash{0%{background-color:#fff1a8}100%{background-color:transparent}}
+.key{position:absolute;right:14px;bottom:70px;background:#1b1f29;color:#fff;border-radius:7px;padding:5px 11px;font:600 13px Inter,sans-serif;opacity:0;transition:opacity .2s;z-index:31}
+.key.on{opacity:.94}
+.graf{position:absolute;z-index:1;background:#fff;border:1px solid #c8cdd3;border-radius:4px;box-shadow:0 2px 8px rgba(0,0,0,.12);opacity:0;transition:opacity .4s;pointer-events:none}
+.graf.on{opacity:1}
+.graf rect.bar{transform-box:fill-box;transform-origin:bottom;transition:height .5s,y .5s}
+.graf.cresce rect.bar{animation:cresce .9s ease-out}
+@keyframes cresce{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.caderno{position:absolute;left:0;right:0;bottom:0;z-index:15;opacity:0;pointer-events:none;transition:opacity .6s;
+  background:#fffdf4 repeating-linear-gradient(transparent 0 33px,#c9d8ee 33px 34px);background-position:0 18px;
+  font:26px/34px "Caveat","Segoe Print","Comic Sans MS",cursive;color:#2b3a67;padding:14px 26px 0 70px;overflow:hidden}
+.caderno::before{content:"";position:absolute;left:52px;top:0;bottom:0;border-left:2px solid #f2a7a7}
+.caderno.on{opacity:1}
+.caderno .ct{font-size:30px;font-weight:700;color:#1d2d5c}
+.caderno .risca{text-decoration:line-through;text-decoration-color:#c0392b;text-decoration-thickness:2px;opacity:.7}
+.caderno .caneta{color:#c0392b;opacity:0;transition:opacity .4s}
+.caderno .caneta.on{opacity:1}
+.caderno .conta{font-size:22px;color:#6a7395;opacity:0;transition:opacity .5s}
+.caderno .conta.on{opacity:1}
+.abas-lista{display:flex}
+.classif{display:grid;gap:8px;margin-top:8px}
+.ci{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.ci .ct2{flex:1;min-width:200px}
+.ci .bs{display:flex;gap:6px}
+.ci .bs button{appearance:none;border:1px solid var(--line);background:#fff;border-radius:8px;padding:6px 10px;font:600 13px Inter,sans-serif;cursor:pointer}
+.ci .bs button:hover{border-color:var(--acc)}
+.ci.ok{border-color:#9ed8b2;background:var(--ok-soft)} .ci.bad{border-color:#f1b0a9;background:var(--bad-soft)}
+.ci .ex{flex-basis:100%;font-size:13.5px;color:var(--ink)}
+/* ---------- extras da 0.2: abas, menu, modelos ---------- */
+.tabin{font:600 13px "Segoe UI",Inter,sans-serif;width:110px;border:1px solid var(--xg);border-radius:3px;padding:2px 5px;outline:none;color:#323130}
+.menu{position:absolute;z-index:33;background:#fff;border:1px solid #c8cdd3;border-radius:6px;box-shadow:0 6px 20px rgba(0,0,0,.18);padding:4px 0;min-width:160px;display:flex;flex-direction:column}
+.menu button{appearance:none;border:0;background:none;text-align:left;padding:7px 14px;font:13px "Segoe UI",Inter,sans-serif;cursor:pointer;color:#323130}
+.menu button:hover{background:#f0f2f4}
+.painel{position:absolute;left:0;right:0;bottom:0;z-index:16;background:#f7f8fa;opacity:0;pointer-events:none;transition:opacity .4s;padding:18px 22px;overflow:auto;font-family:"Segoe UI",Inter,sans-serif}
+.painel.on{opacity:1;pointer-events:auto}
+.painel h4{margin:0 0 12px;font-size:18px;font-weight:600;color:#323130}
+.modelos{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.modelo{background:#fff;border:1px solid #d6d9dd;border-radius:8px;padding:8px;cursor:pointer;text-align:center;font-size:12.5px;color:#323130}
+.modelo:hover{border-color:var(--xg)}
+.modelo .pv{height:86px;border-radius:4px;margin-bottom:7px;background:#fff;border:1px solid #eee;display:grid;gap:3px;padding:6px;grid-template-rows:repeat(5,1fr)}
+.modelo .pv i{display:block;border-radius:2px;background:#e8ecf1}
+.modelo .pv i.h{background:var(--c,#107c41);opacity:.75}
+.termo{border-collapse:collapse;margin:8px 0 2px;font-size:14.5px}
+.termo th,.termo td{border:1px solid var(--line);padding:5px 12px;text-align:left}
+.termo th{background:var(--soft);font-size:12.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+/* ---------- extras da 0.4: menu Arquivo, salvar, downloads, CSV ---------- */
+.xo-top .as{font-size:12.5px;display:flex;align-items:center;gap:6px;opacity:.95}
+.xo-top .as:empty{display:none}
+.xo-top .sw{width:30px;height:15px;border-radius:9px;border:1.5px solid #fff;position:relative;display:inline-block}
+.xo-top .sw::after{content:"";position:absolute;top:2px;left:2px;width:8px;height:8px;border-radius:50%;background:#fff;transition:left .3s}
+.xo-top .sw.on{background:#fff}.xo-top .sw.on::after{left:17px;background:var(--xg)}
+.painel.arq{padding:0;background:#fff}
+.bk{display:flex;height:100%}
+.bk nav{width:170px;background:#0e6b38;display:flex;flex-direction:column;padding:8px 0;flex-shrink:0}
+.bk nav button{appearance:none;border:0;background:none;color:#fff;text-align:left;padding:9px 18px;font:13.5px "Segoe UI",Inter,sans-serif;cursor:pointer}
+.bk nav button:hover{background:rgba(255,255,255,.12)}
+.bk nav button.on{background:rgba(255,255,255,.22);font-weight:600}
+.bk nav .bk-volta{font-size:20px;padding:4px 18px 10px}
+.bk-corpo{flex:1;padding:18px 24px;overflow:auto}
+.bk-corpo h4{margin:0 0 14px;font-size:20px;font-weight:600;color:#323130}
+.bk-op,.bk-arq{display:flex;gap:12px;align-items:center;width:100%;max-width:460px;text-align:left;appearance:none;border:1px solid transparent;background:none;border-radius:6px;padding:10px 12px;cursor:pointer;font:13.5px "Segoe UI",Inter,sans-serif;color:#323130;margin-bottom:4px}
+.bk-op:hover,.bk-arq:hover{background:#f0f4f1;border-color:#cfe3d6}
+.bk-op b,.bk-arq b{display:block;font-weight:600}
+.bk-op small,.bk-arq small{color:#605e5c;font-size:12px}
+.bk-ico{font-size:20px;width:28px;text-align:center}
+.bk-x,.bx-ico{font:700 10px Inter,sans-serif;color:#fff;background:var(--xg);border-radius:4px;padding:6px 5px;min-width:38px;text-align:center}
+.bk-vazio{color:#605e5c}
+.baixa{position:absolute;z-index:17;right:14px;bottom:66px;background:#fff;border:1px solid #c8cdd3;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.16);padding:9px 14px;display:flex;gap:10px;align-items:center;font:13px "Segoe UI",Inter,sans-serif;opacity:0;transform:translateY(8px);transition:opacity .3s,transform .3s;pointer-events:none}
+.baixa.on{opacity:1;transform:none}
+.baixa b{display:block}.baixa small{color:#605e5c}
+.bloco{position:absolute;z-index:18;left:8%;right:8%;top:120px;bottom:44px;background:#fff;border:1px solid #9aa0a6;border-radius:6px;box-shadow:0 10px 30px rgba(0,0,0,.25);display:none;flex-direction:column}
+.bloco.on{display:flex}
+.bl-top{display:flex;justify-content:space-between;align-items:center;background:#f3f3f3;border-bottom:1px solid #ddd;padding:6px 10px;font:12.5px "Segoe UI",Inter,sans-serif;border-radius:6px 6px 0 0}
+.bl-top button{appearance:none;border:0;background:none;cursor:pointer;font-size:14px}
+.bloco pre{margin:0;padding:12px 16px;font:14px/1.6 Consolas,"JetBrains Mono",monospace;overflow:auto;flex:1}
+.dlg{position:absolute;z-index:19;left:50%;top:150px;transform:translateX(-50%);width:min(440px,90%);background:#fff;border:1px solid #9aa0a6;border-radius:8px;box-shadow:0 12px 34px rgba(0,0,0,.28);display:none;font:13.5px "Segoe UI",Inter,sans-serif}
+.dlg.on{display:block}
+.dlg .dt{background:#f3f3f3;border-bottom:1px solid #ddd;padding:8px 12px;font-weight:600;border-radius:8px 8px 0 0}
+.dlg .dc{padding:14px 16px;display:grid;gap:10px}
+.dlg label{display:grid;gap:3px;font-size:12px;color:#605e5c}
+.dlg .campo{border:1px solid #8a8886;border-radius:3px;padding:5px 8px;font-size:13.5px;color:#323130;min-height:30px;background:#fff}
+.dlg .bts{display:flex;justify-content:flex-end;gap:8px}
+.dlg .bts span{border:1px solid #8a8886;border-radius:3px;padding:5px 16px}
+.dlg .bts span.pri{background:var(--xg);border-color:var(--xg);color:#fff}
+.tabela2{border-collapse:collapse;margin:8px 0 2px;font-size:14px}
+.tabela2 th,.tabela2 td{border:1px solid var(--line);padding:4px 10px;text-align:left;vertical-align:top}
+.tabela2 th{background:var(--soft);font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+
+.logo a{color:inherit;text-decoration:none}
+.navcap{max-width:1040px;margin:0 auto;padding:0 20px 20px}
+.navcap div{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px}
+.navcap a{color:var(--acc);text-decoration:none;font-weight:600;font-size:14px}
+.navcap a:hover{text-decoration:underline}
+.navcap a.meio{color:var(--muted);font-weight:500}
+.marca{font-size:12px;color:var(--muted);max-width:1040px;margin:0 auto;padding:0 20px 30px}
+</style>
+</head>
+<body>
+<header>
+  <div class="top"><div class="logo"><a href="/excel-do-zero/">Excel <span>do Zero</span></a></div><div class="crumb">Módulo 0 · Conhecendo o Excel › <b>Cápsula 0.3: Tour pela tela</b> · ~7 min</div></div>
+  <div class="fases" id="fases">
+    <button class="fase on" data-f="0"><b>1 · Aprenda</b>Veja passo a passo</button>
+    <button class="fase" data-f="1"><b>2 · Pratique junto</b>Com a tela te guiando</button>
+    <button class="fase" data-f="2"><b>3 · Sozinho</b>Desafio sem ajuda</button>
+    <button class="fase" data-f="3"><b>4 · Resumo</b>O que levar daqui</button>
+  </div>
+</header>
+<main id="main"></main>
+<nav class="navcap"><div><a href="/excel-do-zero/modulo-0/0-2-arquivo-e-abas">◀ 0.2 · Arquivo e abas</a><a class="meio" href="/excel-do-zero/">Conteúdo do curso Excel do Zero</a><a href="/excel-do-zero/modulo-0/0-4-salvar-abrir-e-formatos">0.4 · Salvar, abrir e formatos ▶</a></div></nav>
+<p class="marca">Excel é marca registrada da Microsoft. Os cursos do Hub ReDi são independentes e não têm vínculo com a Microsoft.</p>
+<script>window.CAPSULA_ID = "excel-do-zero/0-3-tour-pela-tela";</script>
+<script>
+"use strict";
+// =====================================================================
+//  Excel do Zero — motor da janela simulada do Excel online
+//  (o mesmo em todas as cápsulas; cada cápsula acrescenta só o conteúdo)
+// =====================================================================
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
+const espera = (ms) => new Promise((r) => setTimeout(r, ms));
+const COLS = ["A", "B", "C", "D", "E", "F", "G"];
+const NLIN = 10;
+const GUIAS = ["Arquivo", "Página Inicial", "Inserir", "Desenhar", "Layout da Página", "Fórmulas", "Dados", "Revisão", "Exibir", "Automatizar", "Ajuda"];
+
+// ---------- arquivo padrão do Módulo 0: "Gastos do mês" ----------
+const JAN = { A1: "Categoria", B1: "Valor (R$)", A2: "Aluguel", B2: 1200, A3: "Mercado", B3: 650, A4: "Luz", B4: 140, A5: "Água", B5: 85, A6: "Internet", B6: 100, A7: "Transporte", B7: 220, A8: "Total", B8: "=SOMA(B2:B7)" };
+const FEV = { A1: "Categoria", B1: "Valor (R$)", A2: "Aluguel", B2: 1200, A3: "Mercado", B3: 720, A4: "Luz", B4: 155, A5: "Água", B5: 90, A6: "Internet", B6: 100, A7: "Transporte", B7: "=4*45", A8: "Total", B8: "=SOMA(B2:B7)" };
+const ARQ_GASTOS = { nome: "Gastos do mês", larguras: { A: 118, B: 96 }, abas: [{ nome: "Janeiro", dados: JAN }, { nome: "Fevereiro", dados: FEV }], grafico: { rot: ["A2", "A7"], val: ["B2", "B7"], titulo: "Gastos de janeiro" } };
+
+// ---------- ícones da Faixa de Opções ----------
+const sv = (d, extra = "") => '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + (d ? '<path d="' + d + '"/>' : "") + extra + "</svg>";
+const ICO = {
+  desf: sv("M9 14L4 9l5-5M4 9h10a6 6 0 010 12h-3"),
+  ref: sv("M15 14l5-5-5-5M20 9H10a6 6 0 000 12h3"),
+  colar: '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2.5" width="6" height="4" rx="1" fill="#fafafa"/></svg>',
+  copiar: sv("", '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 00-1-1H5a1 1 0 00-1 1v10a1 1 0 001 1h3"/>'),
+  bordas: sv("M4 12h16M12 4v16", '<rect x="4" y="4" width="16" height="16"/>'),
+  fill: sv("M6 11l6-6 6 6-6 6z", '<rect x="3" y="19.5" width="18" height="3" fill="#8fbdf0" stroke="none"/>'),
+  cor: '<svg viewBox="0 0 24 24" width="17" height="17"><text x="12" y="15" text-anchor="middle" font-size="15" font-weight="700" fill="currentColor" font-family="Segoe UI,Arial">A</text><rect x="3" y="19.5" width="18" height="3" fill="#d13438"/></svg>',
+  esq: sv("M4 6h16M4 10h10M4 14h16M4 18h10"),
+  centro: sv("M4 6h16M7 10h10M4 14h16M7 18h10"),
+  dir: sv("M4 6h16M10 10h10M4 14h16M10 18h10"),
+  quebra: sv("M4 6h16M4 12h13a3 3 0 010 6h-4M13 16l-2 2 2 2M4 18h5"),
+};
+const RB = (cmd, title, inner, cls = "") => '<button class="rb ' + cls + '" data-cmd="' + cmd + '" title="' + title + '">' + inner + "</button>";
+const GRP = (nome, ctl) => '<div class="grp" data-grp="' + nome + '"><div class="ctl">' + ctl + '</div><div class="nm">' + nome + "</div></div>";
+const FAIXA =
+  GRP("Desfazer", RB("desfazer", "Desfazer (Ctrl+Z)", ICO.desf) + RB("refazer", "Refazer (Ctrl+Y)", ICO.ref)) +
+  GRP("Área de Transferência", RB("colar", "Colar (Ctrl+V)", ICO.colar + "<span>Colar</span>", "big") + '<div class="col">' + RB("recortar", "Recortar (Ctrl+X)", "✂") + RB("copiar", "Copiar (Ctrl+C)", ICO.copiar) + "</div>") +
+  GRP("Fonte", '<div class="col"><div class="r">' + RB("fonte", "Fonte", "Aptos Narrow <span>▼</span>", "dd w1") + RB("tamanho", "Tamanho da Fonte", "11 <span>▼</span>", "dd") + '</div><div class="r">' + RB("neg", "Negrito (Ctrl+N)", "<b>N</b>") + RB("ita", "Itálico (Ctrl+I)", '<i style="font-family:Georgia,serif">I</i>') + RB("sub", "Sublinhado (Ctrl+S)", "<u>S</u>") + '<span class="sep"></span>' + RB("bordas", "Bordas", ICO.bordas) + RB("fill", "Cor de Preenchimento", ICO.fill) + RB("corfonte", "Cor da Fonte", ICO.cor) + "</div></div>") +
+  GRP("Alinhamento", '<div class="col"><div class="r">' + RB("esq", "Alinhar à Esquerda", ICO.esq) + RB("centro", "Centralizar", ICO.centro) + RB("dir", "Alinhar à Direita", ICO.dir) + '</div><div class="r">' + RB("quebra", "Quebrar Texto Automaticamente", ICO.quebra) + "</div></div>") +
+  GRP("Número", '<div class="col"><div class="r">' + RB("formato", "Formato de Número", "Geral <span>▼</span>", "dd w2") + '</div><div class="r">' + RB("moeda", "Formato de Número de Contabilidade", "R$") + RB("pct", "Estilo de Porcentagem", "%") + RB("mil", "Separador de Milhares", "000") + "</div></div>") +
+  GRP("Edição", RB("autosoma", "AutoSoma (Alt+=)", '<span style="font-size:19px;line-height:1">Σ</span><span>AutoSoma</span>', "big"));
+const FORMATOS = ["neg", "ita", "sub", "fill"];
+const NOME_CMD = { neg: "Negrito", ita: "Itálico", sub: "Sublinhado", fill: "Cor de Preenchimento" };
+const MODULO_CMD = { desfazer: 1, refazer: 1, colar: 2, recortar: 2, copiar: 2, fonte: 3, tamanho: 3, bordas: 3, corfonte: 3, esq: 3, centro: 3, dir: 3, quebra: 3, formato: 3, moeda: 3, pct: 3, mil: 3, autosoma: 4 };
+const ZONAS = {
+  titulo: ["a <b>barra de título</b>", "Ela mostra o nome do arquivo."],
+  guias: ["as <b>guias</b> da Faixa de Opções", "Elas trocam o conjunto de botões que aparece embaixo."],
+  botoes: ["os <b>botões</b> da Faixa de Opções", "Eles aplicam comandos, como negrito e cores."],
+  "caixa-nome": ["a <b>Caixa de Nome</b>", "Ela mostra o endereço da célula selecionada."],
+  fx: ["o botão <b>fx</b>", "Ele serve para inserir funções (vamos usar no Módulo 4)."],
+  "barra-formulas": ["a <b>Barra de Fórmulas</b>", "Ela mostra o <b>conteúdo</b> da célula, não o endereço."],
+  grade: ["uma <b>célula</b> da grade", ""],
+  "cab-col": ["um <b>cabeçalho de coluna</b>", "As letras identificam as colunas."],
+  "cab-lin": ["um <b>cabeçalho de linha</b>", "Os números identificam as linhas."],
+  abas: ["as <b>abas</b>", "Cada aba guarda uma parte dos dados do arquivo."],
+  status: ["a <b>barra de status</b>", "Ela mostra cálculos rápidos da seleção."],
+  zoom: ["o <b>zoom</b>", "Ele muda o tamanho na tela, não os dados."],
+};
+
+// ---------- utilidades de endereço e número ----------
+const partes = (a) => { const m = a.match(/^([A-Z])(\d+)$/); return [COLS.indexOf(m[1]), +m[2]]; };
+function limites(a, b) { const [c1, r1] = partes(a), [c2, r2] = partes(b); return { c1: Math.min(c1, c2), c2: Math.max(c1, c2), r1: Math.min(r1, r2), r2: Math.max(r1, r2) }; }
+function celulas(a, b) { const L = limites(a, b), out = []; for (let r = L.r1; r <= L.r2; r++) for (let c = L.c1; c <= L.c2; c++) out.push(COLS[c] + r); return out; }
+function rotulo(a, b) { const L = limites(a, b); const x = COLS[L.c1] + L.r1, y = COLS[L.c2] + L.r2; return x === y ? x : x + ":" + y; }
+const fmtNum = (v) => String(Math.round(v * 1e10) / 1e10).replace(".", ",");
+function lerNumBR(s) { s = String(s).trim(); if (/^-?\d+(,\d+)?$/.test(s)) return Number(s.replace(",", ".")); if (/^-?\d+\.\d+$/.test(s)) return Number(s); return null; }
+
+// =============== componente: janela do Excel online ===============
+class Janela {
+  constructor(host, { interativo = false, aoEvento = null, arquivo = ARQ_GASTOS, editaveis = null, msgTravada = "Neste exercício essa célula está protegida." } = {}) {
+    this.inter = interativo; this.aoEvento = aoEvento; this.geracao = 0; this.cfg = arquivo; this.arqInicial = arquivo;
+    this.editaveis = editaveis; this.msgTravada = msgTravada; this.editando = false; this.grafOn = false;
+    const linhas = Array.from({ length: NLIN }, (_, i) => '<tr><th data-z="cab-lin" data-r="' + (i + 1) + '">' + (i + 1) + "</th>" + COLS.map((c) => '<td data-z="grade" data-a="' + c + (i + 1) + '"></td>').join("") + "</tr>").join("");
+    host.innerHTML =
+      '<div class="xo">' +
+      '<div class="xo-top" data-z="titulo" data-p="titulo"><span class="app"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>Excel</span><span class="as" data-p="autosave"></span><span class="arq" data-p="arquivo"></span><span class="salvo" data-p="salvo">· Salvo</span><span class="busca">🔍 Pesquisar</span></div>' +
+      '<div class="xo-guias" data-z="guias" data-p="guias">' + GUIAS.map((g) => '<button data-guia="' + g + '" class="' + (g === "Página Inicial" ? "on" : "") + '">' + g + "</button>").join("") + "</div>" +
+      '<div class="xo-botoes" data-z="botoes" data-p="botoes">' + FAIXA + "</div>" +
+      '<div class="xo-fx"><div class="nb" data-z="caixa-nome" data-p="nb" title="Caixa de Nome">A1</div><div class="fxl" data-z="fx" title="Inserir Função">fx</div><div class="fb" data-z="barra-formulas" data-p="fb" title="Barra de Fórmulas"></div></div>' +
+      '<div class="xo-grade" data-p="grade"><div class="gin"><table class="g"><colgroup><col data-col="rh">' + COLS.map((c) => '<col data-col="' + c + '">').join("") + '</colgroup><tr><th class="corner" data-z="grade"></th>' + COLS.map((c) => '<th data-z="cab-col" data-c="' + c + '">' + c + "</th>").join("") + "</tr>" + linhas + '</table><div class="selbox"></div><div class="graf" data-p="graf"></div><input class="cellin" aria-label="Digitar na célula" autocomplete="off" spellcheck="false"></div></div>' +
+      '<div class="xo-abas" data-z="abas" data-p="abas"><button class="nav" data-nav title="Rolar abas">◀</button><button class="nav" data-nav title="Rolar abas">▶</button><button class="add" data-add title="Nova Planilha">+</button><div class="abas-lista"></div></div>' +
+      '<div class="xo-status" data-z="status" data-p="status"><span>Pronto</span><div class="calc" data-p="calc"></div><div class="zoom" data-z="zoom" data-p="zoom"><button data-zoom="-" title="Diminuir zoom">−</button><div class="trilho"><i></i></div><button data-zoom="+" title="Aumentar zoom">+</button><span class="zl">100%</span></div></div>' +
+      '<div class="caderno" data-p="caderno"></div><div class="painel" data-p="painel"></div><div class="bloco" data-p="bloco"></div><div class="dlg" data-p="dlg"></div><div class="baixa" data-p="baixa"></div>' +
+      '<div class="spot"></div><svg class="cursor" viewBox="0 0 24 24"><path d="M3 2l7 19 2.6-7.9L20.5 10z" fill="#fff" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/></svg><div class="balao"></div><div class="toast"></div><div class="key"></div>' +
+      "</div>";
+    this.el = $(".xo", host);
+    this.carregarArquivo(arquivo);
+    if (interativo) this.ligar();
+    if (window.ResizeObserver) new ResizeObserver(() => { this.posSel(); this.desenhaGrafico(); }).observe(this.el);
+  }
+  // ----- estado -----
+  carregarArquivo(cfg) {
+    this.cfg = cfg;
+    $(".arq", this.el).textContent = cfg.nome;
+    this.reset();
+  }
+  cancelarAnimacoes() { this.geracao++; } // qualquer animação em andamento para no próximo w()
+  reset() {
+    this.folhas = {};
+    this.cfg.abas.forEach((a) => (this.folhas[a.nome] = { raw: { ...a.dados }, fmt: JSON.parse(JSON.stringify(a.fmt || {})) }));
+    this.ordem = this.cfg.abas.map((a) => a.nome);
+    this.contPlanilha = this.cfg.proxPlanilha || this.ordem.length + 1;
+    this.ativa = this.cfg.abas[0].nome; this.renderAbas(); this.zoom = 100; this.sel = { a: "A1", b: "A1" };
+    this.editando = false; this.grafOn = false;
+    $(".graf", this.el).classList.remove("on", "cresce");
+    $(".caderno", this.el).classList.remove("on");
+    this.fecharPainel(); this.fecharMenu(); this.fecharBloco(); this.dialogo(null);
+    this.baixados = []; $(".baixa", this.el).classList.remove("on");
+    this.setModo(this.cfg.modo || "online", this.cfg.nome, false);
+    this.spot(null); this.balao(null); this.limparDestaque();
+    this.render();
+  }
+  f() { return this.folhas[this.ativa]; }
+  // ----- abas: criar, renomear, validar -----
+  renderAbas() { $(".abas-lista", this.el).innerHTML = this.ordem.map((n) => '<div class="tabx" data-aba="' + n.replace(/"/g, "&quot;") + '">' + n.replace(/</g, "&lt;") + "</div>").join(""); }
+  tab(nome) { return $$(".tabx", this.el).find((t) => t.dataset.aba === nome); }
+  novaAba() {
+    if (this.ordem.length >= 6) { this.toast("Para manter a tela simples, aqui o arquivo pode ter no máximo 6 abas."); return null; }
+    let nome; do { nome = "Planilha" + this.contPlanilha++; } while (this.folhas[nome]);
+    this.folhas[nome] = { raw: {}, fmt: {} };
+    this.ordem.splice(this.ordem.indexOf(this.ativa) + 1, 0, nome);
+    this.renderAbas(); this.trocarAba(nome);
+    return nome;
+  }
+  validarNome(novo, antigo) {
+    const n = novo.trim();
+    if (n === "") return "O nome da aba não pode ficar em branco.";
+    if (n.length > 31) return "O nome da aba pode ter no máximo <b>31 caracteres</b> (o seu tem " + n.length + ").";
+    const proib = n.match(/[\\\/?*\[\]:]/);
+    if (proib) return "O Excel não aceita o símbolo <b>" + proib[0] + "</b> em nome de aba. Proibidos: <b>/ \\ ? * [ ] :</b>";
+    if (/^'|'$/.test(n)) return "O nome da aba não pode começar nem terminar com apóstrofo (').";
+    if (n.toLowerCase() !== antigo.toLowerCase() && this.ordem.some((o) => o.toLowerCase() === n.toLowerCase())) return "Já existe uma aba chamada <b>" + n + "</b> neste arquivo. Cada aba precisa de um nome diferente.";
+    return null;
+  }
+  renomear(antigo, novo) {
+    const erro = this.validarNome(novo, antigo); if (erro) return erro;
+    const n = novo.trim(); if (n === antigo) return null;
+    this.folhas[n] = this.folhas[antigo]; delete this.folhas[antigo];
+    this.ordem[this.ordem.indexOf(antigo)] = n;
+    if (this.ativa === antigo) this.ativa = n;
+    this.renderAbas(); this.render(); return null;
+  }
+  abrirEdicaoAba(nome, aoTerminar) {
+    const t = this.tab(nome); if (!t) return null;
+    t.innerHTML = '<input class="tabin" value="' + nome.replace(/"/g, "&quot;") + '" maxlength="40" spellcheck="false">';
+    const inp = $(".tabin", t); let feito = false;
+    const fim = (confirmar) => {
+      if (feito) return; feito = true;
+      const novo = inp.value;
+      if (!confirmar) { this.renderAbas(); this.render(); return; }
+      const erro = this.renomear(nome, novo);
+      if (erro) { this.renderAbas(); this.render(); this.toast(erro, "bad", 4200); }
+      aoTerminar && aoTerminar(erro, novo.trim());
+    };
+    inp.addEventListener("keydown", (ev) => { ev.stopPropagation(); if (ev.key === "Enter") { ev.preventDefault(); fim(true); } if (ev.key === "Escape") fim(false); });
+    inp.addEventListener("blur", () => fim(true));
+    inp.addEventListener("pointerdown", (ev) => ev.stopPropagation());
+    inp.focus(); inp.select();
+    return inp;
+  }
+  // menu do botão direito na aba
+  abrirMenu(nome, x, y) {
+    this.fecharMenu();
+    const m = document.createElement("div"); m.className = "menu";
+    m.innerHTML = ["Inserir", "Excluir", "Renomear", "Mover ou Copiar", "Cor da Guia", "Ocultar"].map((o) => '<button data-op="' + o + '">' + o + "</button>").join("");
+    this.el.appendChild(m);
+    const b = this.el.getBoundingClientRect();
+    m.style.left = Math.min(x - b.left, b.width - 170) + "px"; m.style.top = Math.max(4, y - b.top - m.offsetHeight) + "px";
+    m.addEventListener("pointerdown", (ev) => ev.stopPropagation());
+    m.addEventListener("click", (ev) => {
+      const op = ev.target.closest("[data-op]"); if (!op) return; ev.stopPropagation(); this.fecharMenu();
+      if (op.dataset.op === "Renomear") this.iniciarRenomear(nome);
+      else if (op.dataset.op === "Inserir") { const n = this.novaAba(); if (n) this.emit({ tipo: "nova-aba", nome: n }); }
+      else this.toast("<b>" + op.dataset.op + "</b>: vamos ver no <b>Módulo 2</b>, junto com mover, colorir e duplicar abas.");
+    });
+  }
+  fecharMenu() { $$(".menu", this.el).forEach((m) => m.remove()); }
+  iniciarRenomear(nome) {
+    if (this.ativa !== nome) this.trocarAba(nome);
+    this.abrirEdicaoAba(nome, (erro, novo) => { if (erro) this.emit({ tipo: "renomear-erro", de: nome, tentativa: novo, msg: erro }); else if (novo !== nome) this.emit({ tipo: "renomear", de: nome, para: novo }); });
+  }
+  // ----- painel "Novo" com modelos -----
+  abrirPainel(html) { const p = $(".painel", this.el); p.innerHTML = html; p.style.top = $(".xo-guias", this.el).offsetTop + "px"; p.classList.add("on"); }
+  fecharPainel() { $(".painel", this.el).classList.remove("on"); }
+  td(a) { return $('td[data-a="' + a + '"]', this.el); }
+  valor(a) {
+    const r = this.f().raw[a];
+    if (r === undefined || r === "") return "";
+    if (typeof r === "number") return r;
+    if (r.startsWith("=")) return this.calc(r.slice(1).toUpperCase());
+    return r;
+  }
+  num(t) { if (/^[A-Z]\d+$/.test(t)) { const v = this.valor(t); return typeof v === "number" ? v : 0; } return Number(t.replace(",", ".")); }
+  calc(s) { // mini motor: SOMA(intervalo) e uma conta simples entre dois termos
+    let m = s.match(/^SOMA\(([A-Z]\d+):([A-Z]\d+)\)$/);
+    if (m) return celulas(m[1], m[2]).reduce((t, a) => { const v = this.valor(a); return t + (typeof v === "number" ? v : 0); }, 0);
+    m = s.match(/^([A-Z]\d+|\d+(?:,\d+)?)([+\-*\/])([A-Z]\d+|\d+(?:,\d+)?)$/);
+    if (m) { const x = this.num(m[1]), y = this.num(m[3]); return m[2] === "+" ? x + y : m[2] === "-" ? x - y : m[2] === "*" ? x * y : y === 0 ? "#DIV/0!" : x / y; }
+    return "#NOME?";
+  }
+  celulasSel() { return celulas(this.sel.a, this.sel.b); }
+  setSel(a, b = a) { this.sel = { a, b }; this.render(); }
+  trocarAba(nome) { this.ativa = nome; this.sel = { a: "A1", b: "A1" }; this.render(); }
+  setZoom(z) { this.zoom = Math.max(50, Math.min(200, z)); this.render(); }
+  setValor(a, v) { this.f().raw[a] = v; this.render(); this.indicarSalvando(); }
+  // ----- salvar: Excel online (automático) x Excel instalado -----
+  setModo(modo, nome, autosave = false) {
+    this.modo = modo; this.autosave = autosave; this.nomeArq = nome; clearTimeout(this._ts);
+    $(".arq", this.el).textContent = modo === "desktop" ? nome + " - Excel" : nome;
+    $(".as", this.el).innerHTML = modo === "desktop" ? 'AutoSalvamento <i class="sw' + (autosave ? " on" : "") + '"></i> ' + (autosave ? "Ativado" : "Desativado") : "";
+    $(".salvo", this.el).textContent = modo === "desktop" ? (autosave ? "· Salvo no OneDrive" : "") : "· Salvo";
+    $(".busca", this.el).style.visibility = modo === "desktop" ? "hidden" : "";
+  }
+  indicarSalvando() {
+    const s = $(".salvo", this.el);
+    if (this.modo === "desktop" && !this.autosave) { s.textContent = "· Não salvo"; return; }
+    s.textContent = "· Salvando…"; clearTimeout(this._ts);
+    this._ts = setTimeout(() => (s.textContent = this.modo === "desktop" ? "· Salvo no OneDrive" : "· Salvo"), 1100);
+  }
+  // ----- menu Arquivo (tela cheia, como no Excel online) -----
+  abrirArquivo(secao = "Início") {
+    const SECOES = ["Início", "Novo", "Abrir", "Informações", "Salvar como", "Imprimir", "Compartilhar", "Exportar"];
+    const recentes = (this.cfg.recentes || [[this.cfg.nome + ".xlsx", "OneDrive › Documentos"], ["Cadastro de vendedores.xlsx", "OneDrive › Documentos"], ["Controle de estoque.xlsx", "OneDrive › Loja"]]);
+    const op = (acao, tit, desc, ico) => '<button class="bk-op" data-bk-acao="' + acao + '"><span class="bk-ico">' + ico + '</span><span><b>' + tit + "</b><small>" + desc + "</small></span></button>";
+    let corpo;
+    if (secao === "Início" || secao === "Abrir") corpo = "<h4>" + (secao === "Início" ? "Recentes" : "Abrir") + '</h4><div class="bk-lista">' + recentes.map(([n, l]) => '<div class="bk-arq" data-bk-abrir="' + n + '"><span class="bk-x">' + (n.split(".").pop().toUpperCase()) + "</span><span><b>" + n + "</b><small>" + l + "</small></span></div>").join("") + "</div>";
+    else if (secao === "Salvar como") corpo = "<h4>Salvar como</h4>" + op("salvar-online", "Salvar como", "Salvar uma cópia online (no OneDrive)", "💾") + op("renomear-arq", "Renomear", "Renomear esta pasta de trabalho", "✏️") + op("copia", "Baixar uma Cópia", "Baixar uma cópia no seu computador (.xlsx)", "⬇️") + op("ods", "Baixar como ODS", "Baixar uma cópia como arquivo ODS", "⬇️");
+    else if (secao === "Exportar") corpo = "<h4>Exportar</h4>" + op("csv", "Baixar esta planilha como CSV (.csv)", "Só os dados da aba aberta, como texto", "📄") + op("pdf", "Baixar como PDF", "Para ler ou imprimir, sem editar", "📕");
+    else corpo = "<h4>" + secao + '</h4><p class="bk-vazio">Esta parte do menu Arquivo aparece em outros módulos do curso.</p>';
+    const p = $(".painel", this.el);
+    p.innerHTML = '<div class="bk"><nav><button class="bk-volta" data-bk-voltar title="Voltar à planilha">←</button>' + SECOES.map((s) => '<button data-bk-sec="' + s + '" class="' + (s === secao ? "on" : "") + '">' + s + "</button>").join("") + '</nav><div class="bk-corpo">' + corpo + "</div></div>";
+    p.style.top = $(".xo-guias", this.el).offsetTop + "px"; p.classList.add("on", "arq");
+    this.secaoArq = secao;
+  }
+  fecharArquivo() { const p = $(".painel", this.el); p.classList.remove("on", "arq"); this.secaoArq = null; }
+  nomeDownload(acao) { const base = this.nomeArq.replace(/\.xlsx$/, ""); return acao === "csv" ? base + " - " + this.ativa + ".csv" : base + (acao === "pdf" ? ".pdf" : acao === "ods" ? ".ods" : ".xlsx"); }
+  baixar(acao) {
+    const nome = this.nomeDownload(acao);
+    this.baixados.push({ acao, nome, aba: this.ativa });
+    const b = $(".baixa", this.el);
+    b.innerHTML = '<span class="bx-ico">' + nome.split(".").pop().toUpperCase() + "</span><span><b>" + nome + "</b><small>Download concluído · pasta Downloads</small></span>";
+    b.classList.remove("on"); void b.offsetWidth; b.classList.add("on");
+    return nome;
+  }
+  acaoArquivo(acao) {
+    if (["copia", "csv", "pdf", "ods"].includes(acao)) {
+      this.fecharArquivo(); const nome = this.baixar(acao);
+      if (acao === "csv") this.mostrarCSV();
+      this.emit({ tipo: "arquivo", acao, nome, aba: this.ativa });
+    } else if (acao === "salvar-online") { this.toast("<b>Salvar como</b> cria uma cópia com outro nome no OneDrive. Aqui no curso, o arquivo original já está salvo."); this.emit({ tipo: "arquivo", acao }); }
+    else if (acao === "renomear-arq") { this.toast("Para renomear o arquivo, também dá para clicar no <b>nome dele</b>, lá no alto da tela."); this.emit({ tipo: "arquivo", acao }); }
+  }
+  // texto do CSV da aba aberta: valores (não fórmulas), separados por ponto e vírgula
+  textoCSV() {
+    let ultL = 0, ultC = 0;
+    Object.keys(this.f().raw).forEach((a) => { const [c, r] = partes(a); ultL = Math.max(ultL, r); ultC = Math.max(ultC, c); });
+    const linhas = [];
+    for (let r = 1; r <= ultL; r++) { const l = []; for (let c = 0; c <= ultC; c++) { const v = this.valor(COLS[c] + r); l.push(typeof v === "number" ? fmtNum(v) : v); } linhas.push(l.join(";")); }
+    return linhas.join("\n");
+  }
+  mostrarCSV() {
+    const b = $(".bloco", this.el), nome = this.nomeDownload("csv");
+    b.innerHTML = '<div class="bl-top"><span>' + nome + ' — Bloco de Notas</span><button data-bl-fechar title="Fechar">✕</button></div><pre></pre>';
+    $("pre", b).textContent = this.textoCSV();
+    b.classList.add("on");
+  }
+  fecharBloco() { $(".bloco", this.el).classList.remove("on"); }
+  dialogo(html) { const d = $(".dlg", this.el); if (!html) { d.classList.remove("on"); return; } d.innerHTML = html; d.classList.add("on"); }
+  aplicar(cmd) {
+    if (!FORMATOS.includes(cmd)) return false;
+    const f = this.f(), cs = this.celulasSel(), todos = cs.every((a) => f.fmt[a] && f.fmt[a][cmd]);
+    cs.forEach((a) => { f.fmt[a] = f.fmt[a] || {}; f.fmt[a][cmd] = !todos; });
+    this.render(); return true;
+  }
+  podeEditar(a) { return this.editaveis === "todas" || (Array.isArray(this.editaveis) && this.editaveis.includes(a)); }
+  // ----- desenho -----
+  render() {
+    const f = this.f(), z = this.zoom / 100, larg = this.cfg.larguras || {};
+    this.el.style.setProperty("--z", z);
+    $$("col", this.el).forEach((c) => (c.style.width = (c.dataset.col === "rh" ? 36 : larg[c.dataset.col] || 72) * z + "px"));
+    $$(".g td", this.el).forEach((td) => {
+      const a = td.dataset.a, v = this.valor(a), k = f.fmt[a] || {};
+      td.textContent = v === "" ? "" : typeof v === "number" ? fmtNum(v) : v;
+      td.className = [typeof v === "number" ? "num" : "", k.neg ? "neg" : "", k.ita ? "ita" : "", k.sub ? "sub" : "", k.fill ? "fill" : "", td.classList.contains("guia") ? "guia" : ""].join(" ").trim();
+    });
+    const cs = this.celulasSel(), L = limites(this.sel.a, this.sel.b);
+    cs.forEach((a) => { if (a !== this.sel.a) this.td(a).classList.add("insel"); });
+    $$(".g th[data-c]", this.el).forEach((th) => { const i = COLS.indexOf(th.dataset.c); th.classList.toggle("on", i >= L.c1 && i <= L.c2); });
+    $$(".g th[data-r]", this.el).forEach((th) => { const r = +th.dataset.r; th.classList.toggle("on", r >= L.r1 && r <= L.r2); });
+    $(".nb", this.el).textContent = this.sel.a;
+    const r = f.raw[this.sel.a];
+    $(".fb", this.el).textContent = r === undefined ? "" : typeof r === "number" ? fmtNum(r) : r;
+    $$(".tabx", this.el).forEach((t) => t.classList.toggle("on", t.dataset.aba === this.ativa));
+    const vals = cs.map((a) => this.valor(a)).filter((v) => v !== ""), nums = vals.filter((v) => typeof v === "number");
+    let st = "";
+    if (cs.length > 1 && vals.length >= 2) {
+      if (nums.length) { const s = nums.reduce((t, v) => t + v, 0); st = "<span>Média: " + fmtNum(Math.round((s / nums.length) * 100) / 100) + "</span><span>Contagem: " + vals.length + "</span><span>Soma: " + fmtNum(s) + "</span>"; }
+      else st = "<span>Contagem: " + vals.length + "</span>";
+    }
+    $(".calc", this.el).innerHTML = st;
+    $(".zl", this.el).textContent = this.zoom + "%";
+    $(".trilho i", this.el).style.left = Math.max(0, Math.min(76, ((this.zoom - 50) / 150) * 76)) + "px";
+    const k = f.fmt[this.sel.a] || {};
+    FORMATOS.forEach((c) => { if (c !== "fill") $('[data-cmd="' + c + '"]', this.el).classList.toggle("on", !!k[c]); });
+    this.posSel(); this.desenhaGrafico();
+  }
+  posSel() {
+    const L = limites(this.sel.a, this.sel.b), tl = this.td(COLS[L.c1] + L.r1), br = this.td(COLS[L.c2] + L.r2), box = $(".selbox", this.el);
+    if (!tl || !br) return;
+    box.style.left = tl.offsetLeft - 1 + "px"; box.style.top = tl.offsetTop - 1 + "px";
+    box.style.width = br.offsetLeft + br.offsetWidth - tl.offsetLeft + 1 + "px"; box.style.height = br.offsetTop + br.offsetHeight - tl.offsetTop + 1 + "px";
+    const inp = $(".cellin", this.el), a = this.td(this.sel.a);
+    inp.style.left = a.offsetLeft + "px"; inp.style.top = a.offsetTop + "px"; inp.style.width = a.offsetWidth + "px"; inp.style.height = a.offsetHeight + "px";
+  }
+  flash(a) { const t = this.td(a); t.classList.remove("flash"); void t.offsetWidth; t.classList.add("flash"); }
+  flashFormulas() { Object.entries(this.f().raw).forEach(([a, r]) => { if (typeof r === "string" && r.startsWith("=")) this.flash(a); }); }
+  // ----- gráfico de barras (aparece sobre as colunas D a G) -----
+  grafico(on) { const g = $(".graf", this.el); this.grafOn = on; g.classList.remove("cresce"); if (on) { void g.offsetWidth; g.classList.add("cresce"); } this.desenhaGrafico(); }
+  desenhaGrafico() {
+    const g = $(".graf", this.el), G = this.cfg.grafico;
+    if (!this.grafOn || !G) { g.classList.remove("on"); return; }
+    const d1 = this.td("D1"), g8 = this.td("G" + Math.min(8, NLIN));
+    const left = d1.offsetLeft + 10, top = d1.offsetTop + 4, w = g8.offsetLeft + g8.offsetWidth - left - 8, h = g8.offsetTop + g8.offsetHeight - top - 4;
+    Object.assign(g.style, { left: left + "px", top: top + "px", width: w + "px", height: h + "px" });
+    const rot = celulas(G.rot[0], G.rot[1]).map((a) => String(this.valor(a))), val = celulas(G.val[0], G.val[1]).map((a) => { const v = this.valor(a); return typeof v === "number" ? v : 0; });
+    const max = Math.max(...val, 1), n = val.length, pad = 10, topo = 26, base = h - 34, bw = (w - pad * 2) / n;
+    let s = '<svg width="' + w + '" height="' + h + '" font-family="Segoe UI,Inter,sans-serif"><text x="' + w / 2 + '" y="17" text-anchor="middle" font-size="12" font-weight="600" fill="#333">' + G.titulo + "</text>";
+    val.forEach((v, i) => {
+      const bh = ((base - topo) * v) / max, x = pad + i * bw + bw * 0.18, y = base - bh;
+      s += '<rect class="bar" x="' + x + '" y="' + y + '" width="' + bw * 0.64 + '" height="' + bh + '" fill="#4472c4" rx="1"/>';
+      s += '<text x="' + (x + bw * 0.32) + '" y="' + (y - 3) + '" text-anchor="middle" font-size="10" fill="#444">' + fmtNum(v) + "</text>";
+      s += '<text x="' + (x + bw * 0.32) + '" y="' + (base + 13) + '" text-anchor="middle" font-size="9.5" fill="#555">' + rot[i].slice(0, 10) + "</text>";
+    });
+    s += '<line x1="' + pad + '" x2="' + (w - pad) + '" y1="' + base + '" y2="' + base + '" stroke="#bbb"/></svg>';
+    g.innerHTML = s; g.classList.add("on");
+  }
+  // ----- interação real (modo exercício) -----
+  emit(ev) { this.aoEvento && this.aoEvento(ev, this); }
+  focarEntrada() { if (!this.editaveis) return; const inp = $(".cellin", this.el); inp.value = ""; this.posSel(); inp.focus({ preventScroll: true }); }
+  commitEdicao() {
+    if (!this.editando) return;
+    const inp = $(".cellin", this.el), a = this.sel.a, v = inp.value.trim();
+    this.editando = false; inp.value = "";
+    const n = lerNumBR(v);
+    if (v === "") delete this.f().raw[a]; else this.f().raw[a] = n !== null ? n : v;
+    this.render(); this.flashFormulas(); this.indicarSalvando();
+    this.emit({ tipo: "edit", a, raw: this.f().raw[a], aba: this.ativa });
+  }
+  cancelarEdicao() { if (!this.editando) return; this.editando = false; $(".cellin", this.el).value = ""; this.render(); }
+  mover(dc, dr) { const [c, r] = partes(this.sel.a); const nc = Math.max(0, Math.min(COLS.length - 1, c + dc)), nr = Math.max(1, Math.min(NLIN, r + dr)); this.setSel(COLS[nc] + nr); this.focarEntrada(); }
+  ligar() {
+    const el = this.el, inp = $(".cellin", el);
+    el.addEventListener("pointerdown", (ev) => {
+      const z = ev.target.closest("[data-z]");
+      const td = ev.target.closest(".g td");
+      if (td) {
+        ev.preventDefault();
+        this.commitEdicao();
+        this.arrastando = true;
+        if (ev.shiftKey) this.setSel(this.sel.a, td.dataset.a); else this.setSel(td.dataset.a);
+        this.focarEntrada();
+      }
+      const thc = ev.target.closest(".g th[data-c]"), thr = ev.target.closest(".g th[data-r]");
+      if (thc || thr) this.commitEdicao();
+      if (thc) this.setSel(thc.dataset.c + "1", thc.dataset.c + NLIN);
+      if (thr) this.setSel("A" + thr.dataset.r, COLS[COLS.length - 1] + thr.dataset.r);
+      if (z) this.emit({ tipo: "zona", zona: z.dataset.z });
+      if (thc || thr) this.emit({ tipo: "sel", ...this.sel });
+    });
+    document.addEventListener("pointermove", (ev) => {
+      if (!this.arrastando) return;
+      const t = document.elementFromPoint(ev.clientX, ev.clientY);
+      const td = t && t.closest && t.closest(".g td");
+      if (td && el.contains(td) && td.dataset.a !== this.sel.b) this.setSel(this.sel.a, td.dataset.a);
+    });
+    document.addEventListener("pointerup", () => { if (this.arrastando) { this.arrastando = false; this.emit({ tipo: "sel", ...this.sel }); if (this.editaveis) inp.focus({ preventScroll: true }); } });
+    // digitação na célula selecionada
+    inp.addEventListener("input", () => {
+      const a = this.sel.a;
+      if (!this.editando) {
+        if (!this.podeEditar(a)) { inp.value = ""; this.toast(this.msgTravada); this.emit({ tipo: "travada", a }); return; }
+        this.editando = true;
+      }
+      const t = this.td(a); t.classList.add("edit"); t.textContent = inp.value; $(".fb", el).textContent = inp.value;
+    });
+    inp.addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter") { ev.preventDefault(); const ed = this.editando; this.commitEdicao(); this.mover(0, ev.shiftKey ? -1 : 1); if (!ed) this.emit({ tipo: "sel", ...this.sel }); return; }
+      if (ev.key === "Tab") { ev.preventDefault(); this.commitEdicao(); this.mover(1, 0); return; }
+      if (ev.key === "Escape") { this.cancelarEdicao(); return; }
+      if (!this.editando && ev.key.startsWith("Arrow")) { ev.preventDefault(); this.mover(ev.key === "ArrowRight" ? 1 : ev.key === "ArrowLeft" ? -1 : 0, ev.key === "ArrowDown" ? 1 : ev.key === "ArrowUp" ? -1 : 0); this.emit({ tipo: "sel", ...this.sel }); }
+    });
+    inp.addEventListener("blur", () => setTimeout(() => { if (document.activeElement !== inp) this.commitEdicao(); }, 120));
+    el.addEventListener("dblclick", (ev) => { const t = ev.target.closest(".tabx"); if (t && !$(".tabin", t)) { this.iniciarRenomear(t.dataset.aba); return; } });
+    el.addEventListener("contextmenu", (ev) => { const t = ev.target.closest(".tabx"); if (!t) return; ev.preventDefault(); this.abrirMenu(t.dataset.aba, ev.clientX, ev.clientY); });
+    document.addEventListener("pointerdown", (ev) => { if (!ev.target.closest || !ev.target.closest(".menu")) this.fecharMenu(); });
+    el.addEventListener("dblclick", (ev) => { if (ev.target.closest(".g td") && !this.editaveis) this.toast("Nesta cápsula a gente só explora a tela. Digitar nas células fica para o <b>Módulo 1</b>."); });
+    el.addEventListener("click", (ev) => {
+      const b = ev.target.closest("[data-cmd]");
+      if (b) {
+        const cmd = b.dataset.cmd;
+        if (!this.aplicar(cmd)) this.toast("<b>" + b.title + "</b>: você vai usar esse botão no <b>Módulo " + MODULO_CMD[cmd] + "</b>. Por enquanto funcionam N, I, S e Cor de Preenchimento.");
+        this.emit({ tipo: "cmd", cmd }); return;
+      }
+      if (ev.target.closest("[data-bl-fechar]")) { this.fecharBloco(); return; }
+      if (ev.target.closest("[data-bk-voltar]")) { this.fecharArquivo(); this.emit({ tipo: "arquivo-fechar" }); return; }
+      const sec = ev.target.closest("[data-bk-sec]");
+      if (sec) { this.abrirArquivo(sec.dataset.bkSec); this.emit({ tipo: "arquivo-secao", secao: sec.dataset.bkSec }); return; }
+      const ac = ev.target.closest("[data-bk-acao]");
+      if (ac) { this.acaoArquivo(ac.dataset.bkAcao); return; }
+      const ab = ev.target.closest("[data-bk-abrir]");
+      if (ab) { this.toast("Abriria o arquivo <b>" + ab.dataset.bkAbrir + "</b>. Aqui no curso, ficamos neste."); return; }
+      const g = ev.target.closest("[data-guia]");
+      if (g && g.dataset.guia === "Arquivo") { this.commitEdicao(); this.abrirArquivo(); this.emit({ tipo: "guia", guia: "Arquivo" }); return; }
+      if (g) { if (g.dataset.guia !== "Página Inicial") this.toast("A guia <b>" + g.dataset.guia + "</b> mostraria outros botões. Aqui ficamos na <b>Página Inicial</b>, a mais usada."); this.emit({ tipo: "guia", guia: g.dataset.guia }); return; }
+      const t = ev.target.closest("[data-aba]");
+      if (t && $(".tabin", t)) return;
+      if (t) { this.commitEdicao(); this.trocarAba(t.dataset.aba); this.emit({ tipo: "aba", nome: t.dataset.aba }); return; }
+      if (ev.target.closest("[data-add]")) { this.commitEdicao(); const n = this.novaAba(); if (n) this.emit({ tipo: "nova-aba", nome: n }); return; }
+      if (ev.target.closest("[data-nav]")) { this.toast("Essas setas rolam as abas quando o arquivo tem muitas abas."); return; }
+      const zb = ev.target.closest("[data-zoom]");
+      if (zb) { this.setZoom(this.zoom + (zb.dataset.zoom === "+" ? 10 : -10)); this.emit({ tipo: "zoom", zoom: this.zoom }); return; }
+      if (ev.target.closest(".fxl")) this.toast("O <b>fx</b> abre o assistente de funções. Vamos usar no <b>Módulo 4</b>.");
+    });
+  }
+  // ----- camada de ensino -----
+  alvoEl(t) {
+    if (typeof t !== "string") return t;
+    if (/^[A-G]\d+$/.test(t)) return this.td(t);
+    if (/^[\[.#]/.test(t)) return $(t, this.el);
+    return $('[data-p="' + t + '"]', this.el);
+  }
+  rel(e) { const b = this.el.getBoundingClientRect(), r = e.getBoundingClientRect(); return { x: r.left - b.left, y: r.top - b.top, w: r.width, h: r.height, W: b.width, H: b.height }; }
+  async w(ms) { const g = this.geracao; await espera(ms); if (g !== this.geracao) throw new Error("cancelado"); }
+  spot(t, pad = 3) {
+    const s = $(".spot", this.el);
+    if (!t) { s.classList.remove("on"); return; }
+    const p = this.rel(this.alvoEl(t));
+    Object.assign(s.style, { left: p.x - pad + "px", top: p.y - pad + "px", width: p.w + pad * 2 + "px", height: p.h + pad * 2 + "px" });
+    s.classList.add("on");
+  }
+  balao(t, html) {
+    const b = $(".balao", this.el);
+    if (!t) { b.classList.remove("on"); return; }
+    const p = this.rel(this.alvoEl(t));
+    b.innerHTML = html; b.style.left = "0px"; b.style.top = "0px";
+    const bw = b.offsetWidth, bh = b.offsetHeight;
+    const cx = p.x + Math.min(p.w / 2, 60);
+    const left = Math.max(8, Math.min(p.W - bw - 8, cx - 18));
+    const embaixo = p.y + p.h + bh + 14 < p.H;
+    b.classList.toggle("baixo", embaixo); b.classList.toggle("cima", !embaixo);
+    b.style.left = left + "px";
+    b.style.top = (embaixo ? p.y + p.h + 10 : p.y - bh - 10) + "px";
+    b.style.setProperty("--sx", Math.max(8, Math.min(bw - 20, cx - left - 6)) + "px");
+    b.classList.add("on");
+  }
+  toast(html, tipo = "info", ms = 3200) {
+    const t = $(".toast", this.el);
+    t.innerHTML = html; t.className = "toast " + tipo + " on";
+    clearTimeout(this._tt); this._tt = setTimeout(() => t.classList.remove("on"), ms);
+  }
+  destacar(alvos) { this.limparDestaque(); [].concat(alvos).forEach((a) => { const e = this.alvoEl(a); if (e) e.classList.add("guia"); }); }
+  limparDestaque() { $$(".guia", this.el).forEach((e) => e.classList.remove("guia")); }
+  caderno(html) { const c = $(".caderno", this.el); if (html === null) { c.classList.remove("on"); return; } if (html !== undefined) c.innerHTML = html; c.style.top = $(".xo-fx", this.el).offsetTop + "px"; c.classList.add("on"); }
+  // ----- animação (modo demonstração) -----
+  async moverCursor(t, rapido = false) {
+    const c = $(".cursor", this.el), p = this.rel(this.alvoEl(t));
+    if (rapido) c.style.transitionDuration = ".22s, .22s, .3s";
+    c.style.left = p.x + Math.min(p.w * 0.55, 40) + "px"; c.style.top = p.y + p.h * 0.5 + "px";
+    c.classList.add("on");
+    await this.w(rapido ? 240 : 750);
+    c.style.transitionDuration = "";
+  }
+  anel() { const c = $(".cursor", this.el), a = document.createElement("div"); a.className = "anel"; a.style.left = c.style.left; a.style.top = c.style.top; this.el.appendChild(a); setTimeout(() => a.remove(), 500); }
+  async clicar(t) {
+    await this.moverCursor(t); this.anel();
+    const e = this.alvoEl(t);
+    if (e.matches(".g td")) this.setSel(e.dataset.a);
+    else if (e.dataset.cmd) this.aplicar(e.dataset.cmd);
+    else if (e.dataset.aba) this.trocarAba(e.dataset.aba);
+    else if (e.dataset.zoom) this.setZoom(this.zoom + (e.dataset.zoom === "+" ? 10 : -10));
+    else if (e.dataset.guia === "Arquivo") this.abrirArquivo();
+    else if (e.dataset.guia) { $$("[data-guia]", this.el).forEach((g) => g.classList.toggle("on", g === e)); }
+    else if (e.dataset.bkSec) this.abrirArquivo(e.dataset.bkSec);
+    else if (e.dataset.bkAcao) this.acaoArquivo(e.dataset.bkAcao);
+    else if (e.dataset.bkVoltar !== undefined) this.fecharArquivo();
+    await this.w(380);
+  }
+  async arrastar(a, b) {
+    await this.moverCursor(a); this.anel(); this.setSel(a);
+    await this.w(250);
+    const [c1, r1] = partes(a), [c2, r2] = partes(b);
+    const passos = Math.max(Math.abs(c2 - c1), Math.abs(r2 - r1));
+    for (let i = 1; i <= passos; i++) {
+      const c = COLS[Math.round(c1 + ((c2 - c1) * i) / passos)], r = Math.round(r1 + ((r2 - r1) * i) / passos);
+      await this.moverCursor(c + r, true); this.setSel(a, c + r);
+    }
+    await this.w(300);
+  }
+  async criarAbaAnim() { await this.moverCursor("[data-add]"); this.anel(); const n = this.novaAba(); await this.w(500); return n; }
+  async renomearAnim(nome, novo) {
+    const t = this.tab(nome); await this.moverCursor(t); this.anel(); await this.w(160); this.anel();
+    const inp = this.abrirEdicaoAba(nome); inp.blur && inp.removeAttribute("autofocus");
+    await this.w(500); inp.value = "";
+    for (const ch of novo) { inp.value += ch; await this.w(110); }
+    await this.w(300); await this.tecla("Enter ⏎", 450);
+    inp.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+    await this.w(400);
+  }
+  async tecla(nome, ms = 700) { const k = $(".key", this.el); k.textContent = nome; k.classList.add("on"); await this.w(ms); k.classList.remove("on"); }
+  async digitar(a, texto, vel = 110) {
+    const t = this.td(a); t.classList.add("edit"); let s = "";
+    for (const ch of texto) { s += ch; t.textContent = s; $(".fb", this.el).textContent = s; await this.w(vel); }
+    await this.w(300);
+  }
+  async confirmar(a, valor) { await this.tecla("Enter ⏎", 550); this.setValor(a, valor); this.flashFormulas(); }
+}
+
+// =============== componentes de exercício (fora da janela) ===============
+function escolha(box, { enun, ops, certo, okMsg, ruimMsg }) {
+  box.innerHTML = '<div class="enun">' + enun + '</div><div class="ops">' + ops.map((o, i) => '<button class="op" data-k="' + i + '">' + o + "</button>").join("") + '</div><div class="out"></div>';
+  $$(".op", box).forEach((b) => (b.onclick = () => {
+    const ok = +b.dataset.k === certo;
+    $$(".op", box).forEach((x) => x.classList.remove("right", "wrong")); b.classList.add(ok ? "right" : "wrong");
+    $(".out", box).innerHTML = ok ? '<div class="fbk ok"><b>Isso! ✅</b>' + okMsg + "</div>" : '<div class="fbk bad"><b>Não é essa.</b>' + (typeof ruimMsg === "function" ? ruimMsg(+b.dataset.k) : ruimMsg) + "</div>";
+  }));
+}
+function resposta(box, { enun, checar, ph = "" }) {
+  box.innerHTML = '<div class="enun">' + enun + '</div><div class="row"><input class="inp" placeholder="' + ph + '" aria-label="Sua resposta"><button class="btn pri">Conferir</button></div><div class="out"></div>';
+  const go = () => { const r = checar($(".inp", box).value.trim()); $(".out", box).innerHTML = '<div class="fbk ' + (r.ok ? "ok" : "bad") + '"><b>' + (r.ok ? "Isso! ✅" : "Ainda não.") + "</b>" + r.msg + "</div>"; };
+  $(".btn", box).onclick = go; $(".inp", box).onkeydown = (e) => { if (e.key === "Enter") go(); };
+}
+const lerNumero = (s) => { const t = s.replace(/[^\d,.-]/g, "").replace(/\.(?=\d{3}\b)/g, "").replace(",", "."); return t === "" ? NaN : Number(t); };
+
+// Lista de tarefas guiadas sobre uma janela interativa (fase "Pratique junto")
+function tarefasGuiadas({ host, tarefas, opcoesJanela = {}, aoTerminar }) {
+  host.innerHTML = '<div class="card"><div class="row" style="justify-content:space-between"><span class="passo-n tn"></span><div class="row"><button class="btn dk">💡 Dica</button><button class="btn rst">↺ Recomeçar</button></div></div><ol class="tarefas"></ol><div class="tout"></div></div><div class="jw" style="margin-top:14px"></div>';
+  let k = 0, erros = 0, nd = 0;
+  const out = (cls, html) => ($(".tout", host).innerHTML = '<div class="fbk ' + cls + '">' + html + "</div>");
+  const lista = () => {
+    $(".tarefas", host).innerHTML = tarefas.map((t, i) => '<li class="' + (i < k ? "ok" : i === k ? "atual" : "") + '">' + t.txt + "</li>").join("");
+    $(".tn", host).textContent = k < tarefas.length ? "Tarefa " + (k + 1) + " de " + tarefas.length : "Todas as tarefas feitas";
+    $(".dk", host).disabled = k >= tarefas.length;
+  };
+  const j = new Janela($(".jw", host), { ...opcoesJanela, interativo: true, aoEvento: (ev, j) => {
+    if (k >= tarefas.length) return;
+    const t = tarefas[k];
+    if (t.teste(ev, j)) {
+      out("ok", "<b>Certo! ✅</b>" + t.ok(j)); j.toast("✓ Certo!", "ok", 1400); j.limparDestaque();
+      k++; erros = 0; nd = 0; lista();
+      if (k === tarefas.length && aoTerminar) $(".tout", host).innerHTML += aoTerminar();
+      return;
+    }
+    const m = t.erro(ev, j);
+    if (m) { erros++; out("bad", "<b>Ainda não.</b>" + m); j.toast("Ainda não. Leia a explicação acima da tela.", "bad", 1800); if (erros >= 2) j.destacar(t.alvo); }
+  } });
+  $(".dk", host).onclick = () => { const t = tarefas[k]; if (!t) return; const d = Math.min(nd, t.dicas.length - 1); out("info", "<b>💡 Dica " + (d + 1) + " de " + t.dicas.length + "</b>" + t.dicas[d]); if (d === t.dicas.length - 1) j.destacar(t.alvo); nd++; };
+  $(".rst", host).onclick = () => { k = 0; erros = 0; nd = 0; j.carregarArquivo(j.arqInicial); $(".tout", host).innerHTML = ""; lista(); };
+  lista();
+  return j;
+}
+
+// Player da fase "Aprenda"
+let passo = 0, token = 0, jDemo = null, PASSOS = [];
+function montaAprenda({ titulo, lead, passos, opcoesJanela = {} }) {
+  PASSOS = passos;
+  main.innerHTML = "<h1>" + titulo + '</h1><p class="lead">' + lead + "</p>" +
+    '<div class="card narr"><div class="row" style="justify-content:space-between"><span class="passo-n" id="pn"></span><div class="row"><button class="btn" id="ant">◀ Voltar</button><button class="btn" id="rep">↺ Repetir</button><button class="btn pri" id="prox">Próximo ▶</button></div></div><div class="dots" id="dots"></div><div class="txt" id="txt"></div></div>' +
+    '<div id="demo"></div><p class="hint" style="margin-top:10px">Dica: vá no seu ritmo. Se algo passou rápido demais, use <b>Repetir</b>.</p>';
+  jDemo = new Janela($("#demo"), opcoesJanela);
+  $("#ant").onclick = () => irPasso(passo - 1);
+  $("#rep").onclick = () => irPasso(passo);
+  $("#prox").onclick = () => { if (passo < PASSOS.length - 1) irPasso(passo + 1); else { concluiFase(0); abrirFase(1); } };
+  irPasso(passo);
+}
+async function irPasso(i) {
+  if (i < 0 || i >= PASSOS.length) return;
+  const meu = ++token; passo = i;
+  const j = jDemo;
+  j.cancelarAnimacoes(); j.carregarArquivo(j.arqInicial);
+  for (let k = 0; k < i; k++) PASSOS[k].fim && PASSOS[k].fim(j);
+  $("#pn").textContent = "Passo " + (i + 1) + " de " + PASSOS.length;
+  $("#dots").innerHTML = PASSOS.map((_, k) => "<i class='" + (k < i ? "v" : k === i ? "at" : "") + "'></i>").join("");
+  $("#txt").innerHTML = PASSOS[i].t;
+  $("#ant").disabled = i === 0;
+  $("#prox").textContent = i === PASSOS.length - 1 ? "Pratique junto ▶" : "Próximo ▶";
+  try { await j.w(250); await PASSOS[i].anim(j); } catch (e) { /* passo interrompido pelo aluno */ }
+  if (meu === token) { j.spot(null); j.balao(null); }
+}
+
+// Navegação entre as 4 fases
+const main = $("#main");
+let FASES = [];
+const feitas = new Set();
+// progresso do aluno: guardado só no navegador dele (sem login, sem servidor)
+function marcarAulaConcluida(id) { if (!id) return; try { const p = JSON.parse(localStorage.getItem("hubredi-progresso") || "{}"); p[id] = Date.now(); localStorage.setItem("hubredi-progresso", JSON.stringify(p)); } catch (e) {} }
+function concluiFase(i) { if (i === 3) marcarAulaConcluida(window.CAPSULA_ID); feitas.add(i); $$(".fase").forEach((b) => b.classList.toggle("done", feitas.has(+b.dataset.f))); }
+function abrirFase(i) { token++; if (jDemo) jDemo.geracao++; $$(".fase").forEach((b) => b.classList.toggle("on", +b.dataset.f === i)); FASES[i](); window.scrollTo(0, 0); }
+function iniciarCapsula(fases) { FASES = fases; $$(".fase").forEach((b) => (b.onclick = () => abrirFase(+b.dataset.f))); abrirFase(0); }
+
+// =====================================================================
+//  Cápsula 0.3 · Tour pela tela (migrada para o motor único)
+// =====================================================================
+const PASSOS_03 = [
+  { t: "Esta é a tela do <b>Excel online</b>, com o arquivo <b>Gastos do mês</b> que você já conhece. Vamos passear pela tela de cima para baixo, uma parte de cada vez.",
+    anim: async (j) => { j.spot("titulo"); await j.moverCursor("arquivo"); j.balao("arquivo", "O nome do arquivo. No Excel online, tudo é <b>salvo sozinho</b>."); await j.w(2600); } },
+  { t: "Logo abaixo fica a <span class='dest'>Faixa de Opções</span>. A primeira linha tem as <b>guias</b>, e cada uma reúne um tipo de tarefa: <b>Inserir</b> tem gráficos e imagens, <b>Fórmulas</b> tem as funções, <b>Dados</b> tem filtros… A mais usada é a <b>Página Inicial</b>.",
+    anim: async (j) => { j.spot("guias"); for (const g of ["Inserir", "Fórmulas", "Dados"]) { await j.moverCursor('[data-guia="' + g + '"]'); j.balao('[data-guia="' + g + '"]', "Guia <b>" + g + "</b>"); await j.w(1100); } await j.moverCursor('[data-guia="Página Inicial"]'); j.balao('[data-guia="Página Inicial"]', "A guia aberta fica <b>sublinhada</b>"); await j.w(1800); } },
+  { t: "Embaixo das guias ficam os <span class='dest'>botões</span>, organizados em <b>grupos</b>: Área de Transferência, Fonte, Alinhamento, Número… O nome do grupo aparece embaixo dele. Não sabe o que um botão faz? <b>Pare o mouse em cima dele</b> e o nome aparece.",
+    anim: async (j) => { j.spot("botoes"); await j.moverCursor('[data-grp="Fonte"] .nm'); j.balao('[data-grp="Fonte"] .nm', "Grupo <b>Fonte</b>"); await j.w(1600); await j.moverCursor('[data-cmd="neg"]'); j.balao('[data-cmd="neg"]', "Negrito (Ctrl+N)"); await j.w(2000); } },
+  { t: "Vamos usar dois botões. Primeiro selecionamos os títulos <b>Categoria</b> e <b>Valor</b> (A1 e B1). Depois clicamos em <b>N</b> (Negrito) e em <b>Cor de Preenchimento</b>. Repare: um botão só age sobre o que está <b>selecionado</b>.",
+    anim: async (j) => { await j.arrastar("A1", "B1"); await j.clicar('[data-cmd="neg"]'); await j.w(500); await j.clicar('[data-cmd="fill"]'); await j.w(300); j.balao("A1", "Títulos em negrito e com fundo colorido"); await j.w(2200); },
+    fim: (j) => { j.setSel("A1", "B1"); j.aplicar("neg"); j.aplicar("fill"); j.setSel("A1"); } },
+  { t: "O espaço quadriculado é a <span class='dest'>grade</span>. As <b>colunas</b> são identificadas por letras (A, B, C…) e as <b>linhas</b> por números (1, 2, 3…). Cada aba tem mais de 16 mil colunas e mais de 1 milhão de linhas!",
+    anim: async (j) => { j.spot("grade"); await j.moverCursor('th[data-c="B"]'); j.balao('th[data-c="B"]', "Coluna <b>B</b>"); await j.w(1600); await j.moverCursor('th[data-r="4"]'); j.balao('th[data-r="4"]', "Linha <b>4</b>"); await j.w(1800); } },
+  { t: "O encontro de uma coluna com uma linha é uma <span class='dest'>célula</span>. O endereço dela é <b>letra + número</b>: esta é a <b>B4</b>. A célula selecionada ganha uma <b>borda verde</b>, e a letra e o número dela ficam destacados nos cabeçalhos.",
+    anim: async (j) => { await j.clicar("B4"); j.balao("B4", "<b>B4</b> = coluna B, linha 4"); await j.w(2400); },
+    fim: (j) => j.setSel("B4") },
+  { t: "No canto esquerdo, logo acima da grade, fica a <span class='dest'>Caixa de Nome</span>. Ela sempre mostra o <b>endereço</b> da célula selecionada. Clicando em A6, ela mostra <b>A6</b>.",
+    anim: async (j) => { await j.clicar("A6"); j.spot("nb"); j.balao("nb", "<b>A6</b>: a célula selecionada agora"); await j.w(2200); j.balao(null); j.spot(null); await j.clicar("A3"); j.spot("nb"); j.balao("nb", "Mudou a célula, mudou o endereço: <b>A3</b>"); await j.w(2200); },
+    fim: (j) => j.setSel("A3") },
+  { t: "Ao lado do <b>fx</b> fica a <span class='dest'>Barra de Fórmulas</span>: ela mostra o que está <b>dentro</b> da célula. Em B2 está o número 1200, e a barra mostra 1200. Mas a célula <b>B8</b> mostra 2395 enquanto a barra mostra <code>=SOMA(B2:B7)</code>. <b>A célula mostra o resultado; a barra mostra a receita.</b> (Fórmulas ficam para o Módulo 4.)",
+    anim: async (j) => { await j.clicar("B2"); j.spot("fb"); j.balao("fb", "Número digitado: a barra mostra igual"); await j.w(2200); j.balao(null); j.spot(null); await j.clicar("B8"); j.spot("fb"); j.balao("fb", "A conta que está <b>dentro</b> de B8"); await j.w(2600); },
+    fim: (j) => j.setSel("B8") },
+  { t: "Lá embaixo ficam as <span class='dest'>abas</span>, que você conheceu na cápsula 0.2: cada aba guarda uma parte dos dados do arquivo. Aqui, <b>Janeiro</b> e <b>Fevereiro</b>. O <b>+</b> cria uma aba nova e dois cliques no nome renomeiam.",
+    anim: async (j) => { j.spot("abas"); await j.moverCursor("[data-add]"); j.balao("[data-add]", "<b>+</b> cria uma aba nova"); await j.w(1600); await j.clicar('[data-aba="Fevereiro"]'); j.balao('[data-aba="Fevereiro"]', "Mesmo arquivo, outra aba: os gastos de fevereiro"); await j.w(2400); j.balao(null); await j.clicar('[data-aba="Janeiro"]'); await j.w(400); } },
+  { t: "A última linha é a <span class='dest'>barra de status</span>. Selecione alguns números e ela mostra a <b>Média</b>, a <b>Contagem</b> e a <b>Soma</b>, sem nenhuma fórmula. Ótimo para conferir um valor rapidinho.",
+    anim: async (j) => { await j.arrastar("B2", "B5"); j.spot("calc", 5); j.balao("calc", "1200 + 650 + 140 + 85 = <b>2075</b>"); await j.w(2800); },
+    fim: (j) => j.setSel("B2", "B5") },
+  { t: "No canto direito da barra de status fica o <span class='dest'>zoom</span>. Ele aumenta ou diminui o tamanho na tela. Atenção: o zoom <b>não muda os dados</b>, só o tamanho com que você enxerga.",
+    anim: async (j) => { j.spot("zoom", 4); await j.clicar('[data-zoom="+"]'); await j.clicar('[data-zoom="+"]'); j.balao("zoom", "<b>120%</b>: tudo maior, os números são os mesmos"); await j.w(2400); j.balao(null); await j.clicar('[data-zoom="-"]'); await j.clicar('[data-zoom="-"]'); } },
+  { t: "Pronto, você conhece a tela! De cima para baixo: <b>Faixa de Opções</b> (guias e botões), <b>Caixa de Nome</b>, <b>Barra de Fórmulas</b>, <b>grade</b>, <b>abas</b> e <b>barra de status</b>. Agora é a sua vez: clique em <b>Pratique junto</b>.",
+    anim: async (j) => { for (const [z, n] of [["guias", "Guias"], ["botoes", "Botões"], ["nb", "Caixa de Nome"], ["fb", "Barra de Fórmulas"], ["grade", "Grade"], ["abas", "Abas"], ["status", "Barra de status"]]) { j.spot(z); j.balao(z, n); await j.w(1300); } j.spot(null); j.balao(null); } },
+];
+
+const naJaneiro = (j) => j.ativa === "Janeiro";
+const conteudo = (j, a) => { const v = j.valor(a); return v === "" ? "vazia" : typeof v === "number" ? "o número " + fmtNum(v) : "o texto \"" + v + "\""; };
+const TAREFAS_03 = [
+  { txt: "Clique na <b>Caixa de Nome</b>: o lugar que mostra o endereço da célula selecionada.", alvo: "nb",
+    teste: (ev) => ev.tipo === "zona" && ev.zona === "caixa-nome",
+    erro: (ev) => {
+      if (ev.tipo !== "zona") return null;
+      if (ev.zona === "barra-formulas") return "Essa é a <b>Barra de Fórmulas</b>: ela mostra o conteúdo da célula. A Caixa de Nome é a caixinha <b>à esquerda</b> dela, antes do <b>fx</b>. Essa é a confusão mais comum de todas!";
+      const [n, d] = ZONAS[ev.zona] || ["outra parte da tela", ""];
+      return "Você clicou em " + n + ". " + d + " A Caixa de Nome fica <b>à esquerda do fx</b>, logo acima da grade.";
+    },
+    ok: (j) => "Isso! A Caixa de Nome está mostrando <b>" + j.sel.a + "</b>, o endereço da célula selecionada agora.",
+    dicas: ["Ela fica logo acima da grade, no canto esquerdo.", "Olhe à esquerda do símbolo <b>fx</b>. Destaquei para você."] },
+  { txt: "Clique na célula com o <b>valor da Luz</b>.", alvo: "B4",
+    teste: (ev, j) => ev.tipo === "sel" && naJaneiro(j) && rotulo(ev.a, ev.b) === "B4",
+    erro: (ev, j) => {
+      if (ev.tipo !== "sel") return null;
+      if (!naJaneiro(j)) return "Você está na aba <b>" + j.ativa + "</b>. Volte para <b>Janeiro</b>, lá embaixo nas abas.";
+      const r = rotulo(ev.a, ev.b);
+      if (r === "A4") return "Essa é a célula <b>A4</b>, com o <b>texto</b> Luz. O valor fica ao lado, na coluna <b>B</b>.";
+      return "Você clicou em <b>" + r + "</b>" + (r.includes(":") ? "" : ", que tem " + conteudo(j, r)) + ". O valor da Luz está na coluna B, na mesma linha da palavra Luz.";
+    },
+    ok: () => "Certo! Repare na Caixa de Nome: <b>B4</b> (coluna B, linha 4).",
+    dicas: ["O valor fica na coluna B (Valor), na mesma linha da palavra Luz.", "É a célula <b>B4</b>. Destaquei para você."] },
+  { txt: "Clique no <b>Total</b> (o número, não a palavra) e olhe a <b>Barra de Fórmulas</b>.", alvo: "B8",
+    teste: (ev, j) => ev.tipo === "sel" && naJaneiro(j) && rotulo(ev.a, ev.b) === "B8",
+    erro: (ev, j) => {
+      if (ev.tipo !== "sel") return null;
+      if (!naJaneiro(j)) return "Você está na aba <b>" + j.ativa + "</b>. Volte para <b>Janeiro</b>.";
+      const r = rotulo(ev.a, ev.b);
+      if (r === "A8") return "Essa é a <b>palavra</b> Total (A8). O número do total fica ao lado, na coluna B.";
+      return "Você clicou em <b>" + r + "</b>. O total está na última linha da lista, na coluna B.";
+    },
+    ok: () => "Viu? A célula mostra <b>2395</b>, mas a Barra de Fórmulas mostra <code>=SOMA(B2:B7)</code>: a conta que está dentro dela.",
+    dicas: ["O total fica na linha 8.", "É a célula <b>B8</b>. Destaquei para você."] },
+  { txt: "Selecione os valores do <b>Aluguel até a Água</b> (B2 até B5): clique em B2, <b>segure</b> o botão do mouse e arraste até B5. Depois leia a Soma na barra de status.", alvo: ["B2", "B5"],
+    teste: (ev, j) => ev.tipo === "sel" && naJaneiro(j) && rotulo(ev.a, ev.b) === "B2:B5",
+    erro: (ev, j) => {
+      if (ev.tipo !== "sel") return null;
+      if (!naJaneiro(j)) return "Você está na aba <b>" + j.ativa + "</b>. Volte para <b>Janeiro</b>.";
+      const r = rotulo(ev.a, ev.b);
+      if (!r.includes(":")) return "Você clicou só em <b>" + r + "</b>. Para selecionar várias células: clique em B2, <b>segure</b> o botão e arraste até B5. Outro jeito: clique em B2 e depois, segurando <kbd>Shift</kbd>, clique em B5.";
+      if (r === "B1:B5") return "Quase! Você incluiu o cabeçalho <b>Valor (R$)</b>. Comece no B2, no valor do Aluguel.";
+      return "Você selecionou <b>" + r + "</b>. O certo vai de <b>B2</b> (Aluguel) até <b>B5</b> (Água).";
+    },
+    ok: () => "Perfeito! Olhe lá embaixo, na barra de status: <b>Soma: 2075</b>. O Excel somou sem você escrever nenhuma fórmula.",
+    dicas: ["Comece clicando em B2 e não solte o botão do mouse até chegar em B5.", "Se arrastar estiver difícil: clique em B2 e depois, segurando <kbd>Shift</kbd>, clique em B5."] },
+  { txt: "Deixe a palavra <b>Total</b> (A8) em <b>negrito</b>: selecione a célula e clique no botão <b>N</b>.", alvo: '[data-cmd="neg"]',
+    teste: (ev, j) => ev.tipo === "cmd" && naJaneiro(j) && !!(j.folhas.Janeiro.fmt.A8 && j.folhas.Janeiro.fmt.A8.neg),
+    erro: (ev, j) => {
+      if (ev.tipo !== "cmd") return null;
+      const r = rotulo(j.sel.a, j.sel.b);
+      if (ev.cmd === "neg") return "Você aplicou negrito em <b>" + r + "</b>" + (j.ativa !== "Janeiro" ? " da aba " + j.ativa : "") + ". Primeiro clique na célula <b>A8</b> (aba Janeiro), depois no <b>N</b>.";
+      return "Esse é o botão <b>" + (NOME_CMD[ev.cmd] || $('[data-cmd="' + ev.cmd + '"]', j.el).title) + "</b>. O negrito é o botão <b>N</b>, no grupo Fonte.";
+    },
+    ok: () => "Ficou em negrito! No Excel em português, o atalho é <kbd>Ctrl</kbd> + <kbd>N</kbd> (N de Negrito).",
+    dicas: ["Clique primeiro em A8. O botão fica no grupo <b>Fonte</b> da Página Inicial.", "Com A8 selecionada, clique no <b>N</b>. Destaquei o botão."] },
+  { txt: "Aumente o <b>zoom</b> para <b>120%</b>.", alvo: "zoom",
+    teste: (ev) => ev.tipo === "zoom" && ev.zoom === 120,
+    erro: (ev) => (ev.tipo === "zoom" && (ev.zoom > 120 || ev.zoom < 100) ? "O zoom está em <b>" + ev.zoom + "%</b>. Cada clique muda 10%: " + (ev.zoom > 120 ? "passou! Use o <b>−</b> para voltar a 120%." : "o <b>−</b> diminui. Use o <b>+</b> para aumentar até 120%.") : ev.tipo === "zona" && ev.zona !== "zoom" && ev.zona !== "status" ? "O zoom fica no <b>canto inferior direito</b>, na barra de status." : null),
+    ok: () => "Tudo ficou maior, mas os números são os mesmos: o zoom muda só o tamanho na tela.",
+    dicas: ["O zoom fica no canto inferior direito, na barra de status.", "Clique duas vezes no <b>+</b> destacado (100% → 110% → 120%)."] },
+];
+
+function faseAprenda03() {
+  montaAprenda({ titulo: "Tour pela tela", lead: "Antes de ir fundo, vamos conhecer o \"painel\" do Excel: onde fica cada parte e para que ela serve.", passos: PASSOS_03 });
+}
+function fasePratique03() {
+  main.innerHTML = '<h1>Pratique junto</h1><p class="lead">Agora é você quem clica. Faça uma tarefa de cada vez: a tela confere e explica se algo sair diferente.</p><div id="t1"></div><div class="row" style="margin-top:16px"><button class="btn pri" id="seg">Ir para o desafio ▶</button></div>';
+  tarefasGuiadas({ host: $("#t1"), tarefas: TAREFAS_03,
+    aoTerminar: () => { concluiFase(1); return '<div class="fbk ok"><b>Você explorou a tela toda! 🎉</b>Achou a Caixa de Nome, leu a Barra de Fórmulas, selecionou células, usou um botão da Faixa de Opções e mexeu no zoom. Agora tente sem ajuda, no desafio.</div>'; } });
+  $("#seg").onclick = () => abrirFase(2);
+}
+function faseSozinho03() {
+  main.innerHTML = '<h1>Agora sozinho</h1><p class="lead">Sem destaque e sem passo a passo. Use a tela do Excel logo abaixo para descobrir as respostas: é explorando que o conhecimento gruda.</p>' +
+    '<div class="card"><div class="passo-n">Desafio · descubra usando a tela</div><div class="qs"><div class="q" id="d1"></div><div class="q" id="d2"></div><div class="q" id="d3"></div></div></div>' +
+    '<div id="jw" style="margin-top:14px"></div>' +
+    '<div class="card" style="margin-top:16px"><div class="passo-n">Perguntas rápidas</div><div class="qs"><div class="q" id="c1"></div><div class="q" id="c2"></div></div></div>' +
+    '<div class="row" style="margin-top:16px"><button class="btn pri" id="seg">Ver o resumo ▶</button></div>';
+  new Janela($("#jw"), { interativo: true });
+  escolha($("#d1"), { enun: "<b>1.</b> Na aba <b>Fevereiro</b>, a célula do Transporte mostra <b>180</b>. O que está escrito <b>dentro</b> dela?",
+    ops: ["<code>180</code>, um número digitado", "<code>=4*45</code>", "<code>=SOMA(B2:B7)</code>", "<code>Transporte</code>"], certo: 1,
+    okMsg: "A Barra de Fórmulas mostra <code>=4*45</code>: 4 semanas de passe a R$ 45. A célula mostra só o resultado, 180.",
+    ruimMsg: "Vá até a aba Fevereiro, clique na célula do Transporte (coluna B) e olhe a <b>Barra de Fórmulas</b>." });
+  resposta($("#d2"), { enun: "<b>2.</b> Sem fazer conta de cabeça: quanto foi gasto com as <b>contas da casa</b> (Luz, Água e Internet) em <b>Fevereiro</b>?", ph: "ex.: 500",
+    checar: (s) => { const n = lerNumero(s);
+      if (n === 345) return { ok: true, msg: "155 + 90 + 100 = <b>345</b>, lido direto na barra de status, sem nenhuma fórmula." };
+      if (n === 325) return { ok: false, msg: "325 é o valor de <b>Janeiro</b>. Confira se você está na aba Fevereiro." };
+      if (n === 2445 || n === 2395) return { ok: false, msg: "Esse é o total do mês inteiro. Selecione só Luz, Água e Internet." };
+      return { ok: false, msg: "Na aba Fevereiro, selecione os valores de Luz, Água e Internet (coluna B) e leia a <b>Soma</b> lá embaixo, na barra de status." }; } });
+  resposta($("#d3"), { enun: "<b>3.</b> Qual é o <b>endereço</b> da célula que tem o texto <b>Internet</b>?", ph: "ex.: C2",
+    checar: (s) => { const t = s.toUpperCase().replace(/\s/g, "");
+      if (t === "A6") return { ok: true, msg: "Coluna A, linha 6. A Caixa de Nome mostra isso quando você clica na célula." };
+      if (t === "B6") return { ok: false, msg: "B6 é o <b>valor</b> da Internet. O texto fica na coluna da categoria." };
+      if (/^\d+$/.test(t)) return { ok: false, msg: "Faltou a <b>letra</b> da coluna. O endereço é letra + número." };
+      if (/^[A-Z]+$/.test(t)) return { ok: false, msg: "Faltou o <b>número</b> da linha. O endereço é letra + número." };
+      if (/^\d+[A-Z]$/.test(t)) return { ok: false, msg: "Quase! Primeiro vem a <b>letra</b> (coluna), depois o número (linha)." };
+      return { ok: false, msg: "Clique na célula com o texto Internet e olhe a <b>Caixa de Nome</b>." }; } });
+  escolha($("#c1"), { enun: "Na aba <b>Janeiro</b>, a célula B8 mostra <b>2395</b>, mas a Barra de Fórmulas mostra <code>=SOMA(B2:B7)</code>. Por quê?",
+    ops: ["A célula está com erro", "A célula mostra o resultado; a Barra de Fórmulas mostra o que está dentro dela", "A Barra de Fórmulas mostra a célula de cima", "Alguém digitou o número errado"], certo: 1,
+    okMsg: "A célula mostra o <b>resultado</b>; a barra mostra a <b>receita</b>. Sempre que um número parecer estranho, clique na célula e olhe a barra.",
+    ruimMsg: "Lembre o que a Barra de Fórmulas mostra: o conteúdo de dentro da célula." });
+  escolha($("#c2"), { enun: "Você quer saber o <b>endereço</b> da célula selecionada. Onde olha?",
+    ops: ["Na Barra de Fórmulas", "Na Caixa de Nome", "Na barra de status", "Nas guias"], certo: 1,
+    okMsg: "A Caixa de Nome mostra o endereço. A Barra de Fórmulas, ao lado, mostra o conteúdo.",
+    ruimMsg: (k) => (k === 0 ? "A Barra de Fórmulas mostra o <b>conteúdo</b>, não o endereço. É a vizinha dela, à esquerda." : "Essa parte não mostra o endereço. Pense na caixinha à esquerda do fx.") });
+  $("#seg").onclick = () => { concluiFase(2); abrirFase(3); };
+}
+
+// =============== FASE 4: Resumo ===============
+function faseResumo03() {
+  main.innerHTML = '<h1>Resumo da cápsula</h1><p class="lead">As partes da tela que você vai usar em todas as cápsulas daqui para frente.</p><div class="resumo">' +
+    '<div class="card"><h3>🗂️ Faixa de Opções</h3>No alto: <b>guias</b> (Página Inicial, Inserir, Fórmulas…) e, embaixo delas, <b>botões em grupos</b>. Parou o mouse em cima, aparece o nome. O botão age sobre o que está selecionado.</div>' +
+    '<div class="card"><h3>📍 Caixa de Nome</h3>Mostra o <b>endereço</b> da célula selecionada (ex.: <code>B4</code>). Fica à esquerda do <b>fx</b>.</div>' +
+    '<div class="card"><h3>fx Barra de Fórmulas</h3>Mostra o <b>conteúdo</b> da célula. A célula mostra o resultado; a barra mostra a receita (<code>=SOMA(B2:B7)</code>).</div>' +
+    '<div class="card"><h3>▦ Grade</h3>Colunas são letras, linhas são números. Célula = coluna + linha. A célula selecionada fica com borda verde.</div>' +
+    '<div class="card"><h3>📑 Abas (lembrete da 0.2)</h3>Cada aba guarda uma parte dos dados do arquivo. <b>+</b> cria, dois cliques renomeiam. Ao citar uma célula, diga a aba: “B8 da aba Janeiro”.</div>' +
+    '<div class="card"><h3>Σ Barra de status</h3>Selecione números e veja <b>Média, Contagem e Soma</b> sem fórmula. O zoom fica à direita e não muda os dados.</div>' +
+    '<div class="card"><h3>⚠️ Erros comuns</h3><ul><li>Confundir Caixa de Nome (endereço) com Barra de Fórmulas (conteúdo).</li><li>Clicar na palavra (A4) quando queria o valor (B4).</li><li>Procurar os dados na aba errada.</li><li>Achar que o zoom muda os números.</li></ul></div>' +
+    '<div class="card"><h3>⌨️ Atalho</h3><kbd>Ctrl</kbd> + <kbd>N</kbd> aplica negrito no Excel em português (no Excel em inglês é Ctrl + B). Lembre: no português, <kbd>Ctrl</kbd> + <kbd>B</kbd> é <b>salvar</b>..</div>' +
+    '<div class="card"><h3>🔗 Ponte para o Excel de verdade</h3>Entre em <b>office.com</b> com uma conta Microsoft gratuita e abra o Excel. Depois de entrar, digitar <b>excel.new</b> na barra do navegador abre um arquivo novo. Encontre as 6 partes que você viu aqui.</div>' +
+    '<div class="card"><h3>🟩 No Google Sheets é assim</h3>Também tem Caixa de Nome e Barra de Fórmulas (fx), no mesmo lugar. A soma da seleção aparece no <b>canto inferior direito</b>; clique nela para ver média, contagem e outras.</div>' +
+    '</div><div class="card" style="margin-top:14px"><div class="passo-n">Próxima cápsula</div><div class="big" style="margin-top:4px">0.4 · Salvar, abrir e formatos</div><p class="hint" style="margin:4px 0 0">Onde o arquivo fica guardado, o que é .xlsx e as diferenças entre Excel online, Excel instalado e Google Sheets.</p></div>';
+  concluiFase(3);
+}
+
+// =============== navegação entre fases ===============
+iniciarCapsula([faseAprenda03, fasePratique03, faseSozinho03, faseResumo03]);
+
+</script>
+</body>
+</html>

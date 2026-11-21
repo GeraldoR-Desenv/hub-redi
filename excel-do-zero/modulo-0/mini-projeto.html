@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mini projeto do Módulo 0: Meu primeiro arquivo | Excel do Zero – Hub ReDi</title>
+<meta name="description" content="Mini projeto do Módulo 0 do curso Excel do Zero: crie seu primeiro arquivo no Excel online, com abas, soma e download.">
+<link rel="canonical" href="https://hub-redi.netlify.app/excel-do-zero/modulo-0/mini-projeto">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Hub ReDi de Conhecimentos">
+<meta property="og:title" content="Mini projeto do Módulo 0: Meu primeiro arquivo | Excel do Zero – Hub ReDi">
+<meta property="og:description" content="Mini projeto do Módulo 0 do curso Excel do Zero: crie seu primeiro arquivo no Excel online, com abas, soma e download.">
+<meta property="og:url" content="https://hub-redi.netlify.app/excel-do-zero/modulo-0/mini-projeto">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3f6fa; --card:#fff; --ink:#1a1f29; --muted:#5a6475; --line:#dde3ec; --soft:#edf2f8;
+  --acc:#1d5fbf; --acc-2:#164b98; --acc-soft:#e2ecfa; --ok:#15803d; --ok-soft:#e5f6eb; --bad:#b42318; --bad-soft:#fdecea;
+  --hl:#e8590c;
+  /* cores da janela simulada (imitam o Excel online) */
+  --xg:#107c41; --xg-soft:#d3e8da; --xline:#e1e4e8; --xgrid:#e2e3e3; --xhdr:#f3f3f3;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15.5px/1.55 Inter,system-ui,sans-serif}
+code,.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+code{background:var(--soft);padding:1px 6px;border-radius:5px;font-size:.9em}
+kbd{border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;font-size:.85em;background:#fff}
+header{background:var(--card);border-bottom:1px solid var(--line)}
+.top{max-width:1040px;margin:0 auto;padding:14px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{font-weight:700;font-size:17px;letter-spacing:-.01em}
+.logo span{color:var(--acc)}
+.crumb{color:var(--muted);font-size:14px}
+.fases{max-width:1040px;margin:0 auto;padding:0 20px 12px;display:flex;gap:6px;flex-wrap:wrap}
+.fase{flex:1;min-width:150px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:7px 12px;cursor:pointer;text-align:left;font:500 13.5px Inter,sans-serif;color:var(--muted)}
+.fase b{display:block;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.fase.on{border-color:var(--acc);color:var(--ink);box-shadow:inset 0 -3px 0 var(--acc)}
+.fase.done b::after{content:" ✓";color:var(--ok)}
+main{max-width:1040px;margin:0 auto;padding:22px 20px 70px}
+h1{font-size:25px;margin:0 0 4px;letter-spacing:-.02em}
+.lead{color:var(--muted);margin:0 0 16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px}
+.btn{appearance:none;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 16px;border-radius:9px;font:600 14px Inter,sans-serif;cursor:pointer}
+.btn:hover{border-color:var(--muted)}
+.btn.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+.btn.pri:hover{background:var(--acc-2)}
+.btn:disabled{opacity:.45;cursor:default}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.hint{color:var(--muted);font-size:13px}
+.passo-n{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--acc)}
+.dest{background:var(--acc-soft);padding:0 5px;border-radius:5px;font-weight:600}
+.fbk{margin-top:12px;padding:11px 14px;border-radius:10px;font-size:14.5px}
+.fbk.ok{background:var(--ok-soft);border:1px solid #9ed8b2}
+.fbk.bad{background:var(--bad-soft);border:1px solid #f1b0a9}
+.fbk.info{background:var(--soft);border:1px solid var(--line)}
+.fbk > b:first-child{display:block;margin-bottom:2px}
+.enun{font-size:16px;margin:2px 0 10px}
+.ops{display:grid;gap:7px;margin-top:8px}
+.op{text-align:left;padding:10px 13px;border:1px solid var(--line);border-radius:9px;background:#fff;cursor:pointer;font:14.5px Inter,sans-serif;color:var(--ink)}
+.op:hover{border-color:var(--acc)}
+.op.right{border-color:var(--ok);background:var(--ok-soft)} .op.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.inp{font:15px Inter,sans-serif;padding:8px 12px;border:1px solid var(--line);border-radius:9px;width:160px}
+.inp:focus{outline:2px solid var(--acc);border-color:var(--acc)}
+.resumo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:760px){.resumo{grid-template-columns:1fr}}
+.resumo .card h3{margin:0 0 6px;font-size:15px}
+.resumo ul{margin:0;padding-left:20px}
+.big{font-size:22px;font-weight:700}
+.qs{display:grid;gap:14px}
+.qs .q + .q{border-top:1px solid var(--line);padding-top:14px}
+
+/* ---------- narração ---------- */
+.narr{margin-bottom:14px}
+.narr .txt{font-size:16.5px;line-height:1.6;margin:8px 0 14px;min-height:5.2em}
+.dots{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap}
+.dots i{width:22px;height:5px;border-radius:5px;background:var(--line)}
+.dots i.v{background:var(--acc)} .dots i.at{background:var(--acc);opacity:.45}
+
+/* ---------- tarefas ---------- */
+.tarefas{margin:6px 0 12px;padding-left:22px}
+.tarefas li{margin:5px 0;color:#9aa3b2}
+.tarefas li.atual{color:var(--ink);font-weight:500}
+.tarefas li.ok{color:var(--ok)}
+.tarefas li.ok::marker{content:"✓  "}
+
+/* =============== janela simulada do Excel online =============== */
+.xo{--z:1;border:1px solid #c8cdd3;border-radius:10px;overflow:hidden;background:#fff;position:relative;user-select:none;-webkit-user-select:none;font-family:"Segoe UI",Inter,system-ui,sans-serif;color:#323130;box-shadow:0 6px 24px rgba(20,30,50,.08)}
+.xo-top{background:var(--xg);color:#fff;display:flex;align-items:center;gap:12px;height:40px;padding:0 14px;font-size:14px;white-space:nowrap}
+.xo-top .app{display:flex;align-items:center;gap:7px;font-weight:700}
+.xo-top .arq{font-weight:600}
+.xo-top .salvo{opacity:.8;font-size:12.5px}
+.xo-top .busca{margin-left:auto;background:rgba(255,255,255,.18);border-radius:6px;padding:4px 14px;font-size:12.5px;min-width:170px;opacity:.9}
+.xo-guias{display:flex;gap:2px;padding:0 8px;border-bottom:1px solid var(--xline);background:#fff;overflow-x:auto;scrollbar-width:none}
+.xo-guias button{appearance:none;border:0;background:none;padding:8px 10px 5px;font:13px "Segoe UI",Inter,sans-serif;color:#323130;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent}
+.xo-guias button:hover{background:#f3f3f3}
+.xo-guias button.on{color:var(--xg);font-weight:600;border-bottom-color:var(--xg)}
+.xo-botoes{display:flex;align-items:stretch;padding:6px 6px 3px;background:#fafafa;border-bottom:1px solid var(--xline);overflow-x:auto;scrollbar-width:thin}
+.grp{display:flex;flex-direction:column;align-items:center;padding:0 9px;border-right:1px solid var(--xline);flex-shrink:0}
+.grp:last-child{border-right:0}
+.grp .ctl{display:flex;gap:3px;align-items:center;flex:1}
+.grp .nm{font-size:11px;color:#605e5c;margin-top:3px;white-space:nowrap}
+.grp .col{display:flex;flex-direction:column;gap:3px}
+.grp .r{display:flex;gap:2px;align-items:center}
+.sep{width:1px;height:20px;background:var(--xline);margin:0 3px}
+.rb{appearance:none;border:1px solid transparent;background:none;border-radius:4px;min-width:27px;height:27px;display:inline-flex;align-items:center;justify-content:center;gap:5px;cursor:pointer;color:#323130;font:14px "Segoe UI",Inter,sans-serif;padding:0 4px;white-space:nowrap}
+.rb:hover{background:#e8eaed}
+.rb.on{background:var(--xg-soft);border-color:#9fcdb1}
+.rb.dd{border-color:#c8cdd3;background:#fff;justify-content:space-between;font-size:12.5px;padding:0 6px}
+.rb.dd span{font-size:9px;color:#605e5c}
+.rb.w1{width:112px} .rb.w2{width:100px}
+.rb.big{flex-direction:column;height:57px;gap:1px;font-size:11.5px;padding:2px 6px}
+.xo-fx{display:flex;height:30px;border-bottom:1px solid #d6d9dd;align-items:stretch;background:#fff}
+.xo-fx .nb{width:92px;border-right:1px solid #d6d9dd;display:flex;align-items:center;padding:0 9px;font-size:13px;cursor:text}
+.xo-fx .fxl{width:40px;border-right:1px solid #d6d9dd;display:flex;align-items:center;justify-content:center;color:#605e5c;font:italic 600 14px Georgia,serif;cursor:pointer}
+.xo-fx .fb{flex:1;display:flex;align-items:center;padding:0 10px;font-size:13.5px;white-space:pre;overflow:hidden;cursor:text}
+.xo-grade{position:relative;overflow:auto;height:264px;background:#fff}
+.gin{position:relative;display:inline-block;min-width:100%}
+table.g{border-collapse:collapse;table-layout:fixed}
+.g th{background:var(--xhdr);color:#444;font-weight:400;font-size:calc(12px * var(--z));height:calc(22px * var(--z));border:1px solid #dadce0;padding:0;cursor:pointer}
+.g th.corner{cursor:default}
+.g th[data-c].on{background:var(--xg-soft);color:#0b5a2e;font-weight:600;box-shadow:inset 0 -2px 0 var(--xg)}
+.g th[data-r].on{background:var(--xg-soft);color:#0b5a2e;font-weight:600;box-shadow:inset -2px 0 0 var(--xg)}
+.g td{height:calc(24px * var(--z));border:1px solid var(--xgrid);padding:0 5px;font-size:calc(14px * var(--z));white-space:nowrap;overflow:hidden;cursor:cell;font-family:"Aptos Narrow","Segoe UI",Inter,sans-serif;touch-action:none}
+.g td.num{text-align:right;font-variant-numeric:tabular-nums}
+.g td.neg{font-weight:700} .g td.ita{font-style:italic} .g td.sub{text-decoration:underline}
+.g td.fill{background-color:#cfe2f8}
+.g td.insel{background-image:linear-gradient(rgba(16,124,65,.10),rgba(16,124,65,.10))}
+.selbox{position:absolute;border:2px solid var(--xg);pointer-events:none;z-index:2}
+.selbox::after{content:"";position:absolute;right:-5px;bottom:-5px;width:7px;height:7px;background:var(--xg);border:1px solid #fff}
+.xo-abas{display:flex;align-items:stretch;height:32px;border-top:1px solid #d6d9dd;background:var(--xhdr);font-size:13px}
+.xo-abas .nav,.xo-abas .add{appearance:none;border:0;background:none;width:30px;cursor:pointer;color:#605e5c;font-size:13px}
+.xo-abas .add{font-size:19px;color:var(--xg);border-right:1px solid var(--xline)}
+.xo-abas .tabx{padding:0 18px;display:flex;align-items:center;cursor:pointer;border-right:1px solid var(--xline);white-space:nowrap}
+.xo-abas .tabx:hover{background:#eaeaea}
+.xo-abas .tabx.on{background:#fff;color:var(--xg);font-weight:600;box-shadow:inset 0 -3px 0 var(--xg)}
+.xo-status{display:flex;align-items:center;height:28px;background:var(--xhdr);border-top:1px solid var(--xline);font-size:12px;color:#444;padding:0 10px;gap:16px;white-space:nowrap}
+.xo-status .calc{margin-left:auto;display:flex;gap:16px}
+.xo-status .zoom{display:flex;align-items:center;gap:6px}
+.xo-status .zoom button{appearance:none;border:0;background:none;cursor:pointer;font-size:15px;color:#444;width:20px;height:20px;border-radius:4px}
+.xo-status .zoom button:hover{background:#e3e3e3}
+.xo-status .trilho{width:80px;height:3px;background:#bbb;position:relative;border-radius:2px}
+.xo-status .trilho i{position:absolute;top:-4px;width:4px;height:11px;background:#444;border-radius:1px}
+/* camada de ensino sobre a janela */
+.spot{position:absolute;z-index:20;border-radius:6px;box-shadow:0 0 0 3000px rgba(17,24,39,.5);outline:2px solid #fff;pointer-events:none;transition:left .45s,top .45s,width .45s,height .45s,opacity .3s;opacity:0}
+.spot.on{opacity:1}
+.cursor{position:absolute;width:22px;height:22px;pointer-events:none;z-index:30;transition:left .7s cubic-bezier(.4,.1,.2,1),top .7s cubic-bezier(.4,.1,.2,1),opacity .3s;left:50%;top:55%;opacity:0;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35))}
+.cursor.on{opacity:1}
+.anel{position:absolute;z-index:29;width:24px;height:24px;margin:-12px 0 0 -12px;border-radius:50%;border:2px solid var(--hl);pointer-events:none;animation:anel .45s ease-out forwards}
+@keyframes anel{from{transform:scale(.3);opacity:1}to{transform:scale(1.7);opacity:0}}
+.balao{position:absolute;z-index:31;background:#1b1f29;color:#fff;font:13px/1.4 Inter,sans-serif;padding:7px 11px;border-radius:8px;max-width:280px;opacity:0;transition:opacity .25s;pointer-events:none}
+.balao.on{opacity:.96}
+.balao::after{content:"";position:absolute;left:var(--sx,16px);border:6px solid transparent}
+.balao.baixo::after{top:-12px;border-bottom-color:#1b1f29}
+.balao.cima::after{bottom:-12px;border-top-color:#1b1f29}
+.toast{position:absolute;z-index:32;left:50%;bottom:72px;transform:translateX(-50%) translateY(8px);max-width:min(520px,92%);padding:9px 14px;border-radius:9px;font:13.5px/1.45 Inter,sans-serif;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;box-shadow:0 6px 20px rgba(0,0,0,.18)}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.info{background:#1b1f29;color:#fff} .toast.ok{background:var(--ok);color:#fff} .toast.bad{background:var(--bad);color:#fff}
+.guia{outline:3px solid var(--hl)!important;outline-offset:-3px;animation:guia 1.2s ease-in-out infinite}
+.g td.guia{outline:0!important;box-shadow:inset 0 0 0 3px var(--hl)}
+@keyframes guia{50%{outline-color:#ffb27a}}
+.hide{display:none!important}
+.regra{border-left:4px solid var(--acc)}
+.barra{height:6px;background:var(--line);border-radius:6px;margin:8px 0 6px;overflow:hidden}
+.barra i{display:block;height:100%;width:0;background:var(--ok);transition:width .4s}
+.lista{margin:6px 0 0;padding-left:24px}
+.lista li{margin:10px 0;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:#fff}
+.lista li.ok{background:var(--ok-soft);border-color:#9ed8b2}
+.chk{display:flex;gap:10px;align-items:flex-start;cursor:pointer}
+.chk input[type=checkbox]{width:18px;height:18px;margin-top:3px;accent-color:var(--ok);flex-shrink:0}
+.lista details{margin:6px 0 0 28px;font-size:14px;color:var(--muted)}
+.lista summary{cursor:pointer;color:var(--acc);font-weight:500}
+.cap{display:inline-block;background:var(--acc-soft);color:var(--acc-2);border-radius:6px;padding:0 6px;font-size:12px;font-weight:600;margin-left:4px}
+.inp.mini{width:110px;padding:3px 8px;font-size:14px;margin-left:4px}
+
+.logo a{color:inherit;text-decoration:none}
+.navcap{max-width:1040px;margin:0 auto;padding:0 20px 20px}
+.navcap div{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:16px}
+.navcap a{color:var(--acc);text-decoration:none;font-weight:600;font-size:14px}
+.navcap a:hover{text-decoration:underline}
+.navcap a.meio{color:var(--muted);font-weight:500}
+.marca{font-size:12px;color:var(--muted);max-width:1040px;margin:0 auto;padding:0 20px 30px}
+</style>
+</head>
+<body>
+<script>window.CAPSULA_ID = "excel-do-zero/mini-projeto";</script>
+<header>
+  <div class="top"><div class="logo"><a href="/excel-do-zero/">Excel <span>do Zero</span></a></div><div class="crumb">Módulo 0 · Conhecendo o Excel › <b>Mini projeto: meu primeiro arquivo</b> · ~20 min</div></div>
+</header>
+<main>
+  <h1>Mini projeto: meu primeiro arquivo</h1>
+  <p class="lead">Agora é no <b>Excel de verdade</b>. Você vai criar um arquivo para anotar os seus gastos de dois meses, usando tudo o que viu no Módulo 0.</p>
+
+  <div class="card regra"><div class="passo-n">Antes de começar</div>
+    <p style="margin:6px 0 0">Tente fazer <b>sem voltar às cápsulas</b>. Só se aprende de verdade quando se consegue aplicar sozinho. Travou? Cada item tem uma dica escondida e diz em qual cápsula o assunto está.</p>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="row" style="justify-content:space-between"><span class="passo-n">Sua lista de tarefas</span><span class="hint" id="prog"></span></div>
+    <div class="barra"><i id="barra"></i></div>
+    <ol class="lista" id="lista"></ol>
+  </div>
+
+  <div class="card hide" id="fim" style="margin-top:14px">
+    <div class="passo-n">Autoavaliação</div>
+    <div class="enun">Você conseguiu fazer tudo <b>sem consultar</b> as cápsulas?</div>
+    <div class="ops" id="aval">
+      <button class="op" data-k="0">Sim, fiz tudo sozinho</button>
+      <button class="op" data-k="1">Precisei olhar uma ou duas dicas</button>
+      <button class="op" data-k="2">Precisei voltar às cápsulas várias vezes</button>
+    </div>
+    <div id="avalout"></div>
+  </div>
+
+  <div class="resumo" style="margin-top:14px">
+    <div class="card"><h3>🟩 Prefere o Google Sheets?</h3>Também vale! Entre em <b>sheets.new</b>. O nome do arquivo fica no alto, à esquerda; as abas, embaixo (lá elas nascem como Página1). Para baixar: <b>Arquivo › Fazer download</b>.</div>
+    <div class="card"><h3>💾 Guarde este arquivo</h3>O arquivo <b>Meus gastos</b> vai voltar nos próximos módulos: você vai formatá-lo no Módulo 3 e fazer as contas com fórmulas no Módulo 4.</div>
+  </div>
+
+  <div class="card" style="margin-top:14px"><div class="passo-n">Fim do Módulo 0 🎉</div><div class="big" style="margin-top:4px">Próximo: Módulo 1 · Navegar e digitar</div><p class="hint" style="margin:4px 0 0">Endereços, seleção, digitar e editar, tipos de dado e os atalhos para andar pela planilha sem o mouse.</p></div>
+</main>
+<nav class="navcap"><div><a href="/excel-do-zero/modulo-0/0-4-salvar-abrir-e-formatos">◀ 0.4 · Salvar, abrir e formatos</a><a class="meio" href="/excel-do-zero/">Conteúdo do curso Excel do Zero</a><a href="/excel-do-zero/">Voltar ao curso ▶</a></div></nav>
+<p class="marca">Excel é marca registrada da Microsoft. Os cursos do Hub ReDi são independentes e não têm vínculo com a Microsoft.</p>
+<script>
+"use strict";
+const $ = (s, el = document) => el.querySelector(s);
+const ITENS = [
+  { t: "Abra o <b>Excel online</b> e crie uma pasta de trabalho em branco.", d: "Entre em <b>office.com</b> com uma conta Microsoft (é grátis criar uma) e abra o Excel. Atalho: depois de entrar, digite <b>excel.new</b> na barra do navegador.", c: "0.1 e 0.4" },
+  { t: "Dê o nome <b>Meus gastos</b> ao arquivo.", d: "Clique no nome do arquivo, lá no alto da tela, e digite o nome novo.", c: "0.4" },
+  { t: "Renomeie a aba <b>Planilha1</b> para o <b>mês passado</b> (ex.: Outubro).", d: "Dois cliques no nome da aba, digite e aperte Enter. Ou botão direito na aba › Renomear.", c: "0.2" },
+  { t: "Crie uma <b>aba nova</b> e dê a ela o nome do <b>mês atual</b>.", d: "O <b>+</b> fica ao lado das abas, lá embaixo. Depois, renomeie como no item anterior.", c: "0.2" },
+  { t: "Na aba do mês passado, escreva <b>Categoria</b> em A1, <b>Valor</b> em B1 e, embaixo, <b>3 gastos seus</b> (nome na coluna A, valor na coluna B).", d: "Clique na célula, digite e aperte Enter. Digite só os números no valor, sem R$.", c: "0.1" },
+  { t: "Faça o mesmo na aba do <b>mês atual</b>.", d: "Clique na aba do mês atual, lá embaixo, e repita o item anterior.", c: "0.2" },
+  { t: "Selecione os 3 valores do mês atual e leia a <b>Soma</b> na barra de status. Anote aqui: <input class='inp mini' id='soma' placeholder='soma' aria-label='Soma lida na barra de status'>", d: "Clique no primeiro valor, segure e arraste até o último. A soma aparece no canto inferior direito.", c: "0.3" },
+  { t: "Deixe os títulos <b>Categoria</b> e <b>Valor</b> em <b>negrito</b> nas duas abas.", d: "Selecione A1 e B1 e clique no <b>N</b> (Página Inicial › grupo Fonte), ou use <kbd>Ctrl</kbd> + <kbd>N</kbd>.", c: "0.3" },
+  { t: "Baixe uma <b>cópia .xlsx</b> e encontre o arquivo na pasta <b>Downloads</b> do computador.", d: "Arquivo › Salvar como › Baixar uma Cópia.", c: "0.4" },
+  { t: "<b>Bônus:</b> exporte a aba do mês atual como <b>CSV</b> e abra o arquivo no Bloco de Notas (Windows) ou no TextEdit (Mac). Repare: só texto, separado por ponto e vírgula.", d: "Com a aba do mês atual aberta: Arquivo › Exportar › Baixar esta planilha como CSV.", c: "0.4" },
+];
+let feito = {};
+try { feito = JSON.parse(localStorage.getItem("hubredi-excel-m0-mini") || "{}"); } catch (e) { feito = {}; }
+const salvar = () => { try { localStorage.setItem("hubredi-excel-m0-mini", JSON.stringify(feito)); } catch (e) {} };
+function render() {
+  $("#lista").innerHTML = ITENS.map((it, i) => '<li class="' + (feito[i] ? "ok" : "") + '"><label class="chk"><input type="checkbox" data-i="' + i + '"' + (feito[i] ? " checked" : "") + '><span>' + it.t + '</span></label><details><summary>Travou? Ver dica</summary>' + it.d + ' <span class="cap">Cápsula ' + it.c + "</span></details></li>").join("");
+  if (feito.soma) $("#soma").value = feito.soma;
+  const n = ITENS.filter((_, i) => feito[i]).length, obrig = ITENS.length - 1, nObrig = ITENS.slice(0, obrig).filter((_, i) => feito[i]).length;
+  $("#prog").textContent = n + " de " + ITENS.length + " feitas";
+  $("#barra").style.width = (100 * n) / ITENS.length + "%";
+  $("#fim").classList.toggle("hide", nObrig < obrig);
+  if (nObrig >= obrig) { try { const p = JSON.parse(localStorage.getItem("hubredi-progresso") || "{}"); if (!p[window.CAPSULA_ID]) { p[window.CAPSULA_ID] = Date.now(); localStorage.setItem("hubredi-progresso", JSON.stringify(p)); } } catch (e) {} }
+  document.querySelectorAll("#lista input[type=checkbox]").forEach((c) => (c.onchange = () => { feito[c.dataset.i] = c.checked; salvar(); render(); }));
+  $("#soma").oninput = (e) => { feito.soma = e.target.value; salvar(); };
+}
+document.querySelectorAll("#aval .op").forEach((b) => (b.onclick = () => {
+  document.querySelectorAll("#aval .op").forEach((x) => x.classList.remove("right"));
+  b.classList.add("right");
+  $("#avalout").innerHTML = [
+    '<div class="fbk ok"><b>Excelente! 🎉</b>Você aplicou o Módulo 0 sozinho: esse é o nosso critério de aprendizado. Pode seguir para o Módulo 1.</div>',
+    '<div class="fbk ok"><b>Muito bom!</b>Usar uma ou duas dicas é normal. Daqui a uns dias, tente refazer o mini projeto num arquivo novo, sem dicas: se conseguir, o conteúdo grudou.</div>',
+    '<div class="fbk info"><b>Tudo bem, faz parte!</b>Revise as cápsulas indicadas nas dicas que você abriu e refaça o mini projeto num arquivo novo. Quando sair sem consultar, siga para o Módulo 1.</div>',
+  ][+b.dataset.k];
+}));
+render();
+</script>
+
+</body>
+</html>

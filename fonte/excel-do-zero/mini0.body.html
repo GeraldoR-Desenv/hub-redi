@@ -1,0 +1,75 @@
+<header>
+  <div class="top"><div class="logo">Excel <span>do Zero</span></div><div class="crumb">Módulo 0 · Conhecendo o Excel › <b>Mini projeto: meu primeiro arquivo</b> · ~20 min</div></div>
+</header>
+<main>
+  <h1>Mini projeto: meu primeiro arquivo</h1>
+  <p class="lead">Agora é no <b>Excel de verdade</b>. Você vai criar um arquivo para anotar os seus gastos de dois meses, usando tudo o que viu no Módulo 0.</p>
+
+  <div class="card regra"><div class="passo-n">Antes de começar</div>
+    <p style="margin:6px 0 0">Tente fazer <b>sem voltar às cápsulas</b>. Só se aprende de verdade quando se consegue aplicar sozinho. Travou? Cada item tem uma dica escondida e diz em qual cápsula o assunto está.</p>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="row" style="justify-content:space-between"><span class="passo-n">Sua lista de tarefas</span><span class="hint" id="prog"></span></div>
+    <div class="barra"><i id="barra"></i></div>
+    <ol class="lista" id="lista"></ol>
+  </div>
+
+  <div class="card hide" id="fim" style="margin-top:14px">
+    <div class="passo-n">Autoavaliação</div>
+    <div class="enun">Você conseguiu fazer tudo <b>sem consultar</b> as cápsulas?</div>
+    <div class="ops" id="aval">
+      <button class="op" data-k="0">Sim, fiz tudo sozinho</button>
+      <button class="op" data-k="1">Precisei olhar uma ou duas dicas</button>
+      <button class="op" data-k="2">Precisei voltar às cápsulas várias vezes</button>
+    </div>
+    <div id="avalout"></div>
+  </div>
+
+  <div class="resumo" style="margin-top:14px">
+    <div class="card"><h3>🟩 Prefere o Google Sheets?</h3>Também vale! Entre em <b>sheets.new</b>. O nome do arquivo fica no alto, à esquerda; as abas, embaixo (lá elas nascem como Página1). Para baixar: <b>Arquivo › Fazer download</b>.</div>
+    <div class="card"><h3>💾 Guarde este arquivo</h3>O arquivo <b>Meus gastos</b> vai voltar nos próximos módulos: você vai formatá-lo no Módulo 3 e fazer as contas com fórmulas no Módulo 4.</div>
+  </div>
+
+  <div class="card" style="margin-top:14px"><div class="passo-n">Fim do Módulo 0 🎉</div><div class="big" style="margin-top:4px">Próximo: Módulo 1 · Navegar e digitar</div><p class="hint" style="margin:4px 0 0">Endereços, seleção, digitar e editar, tipos de dado e os atalhos para andar pela planilha sem o mouse.</p></div>
+</main>
+<script>
+"use strict";
+const $ = (s, el = document) => el.querySelector(s);
+const ITENS = [
+  { t: "Abra o <b>Excel online</b> e crie uma pasta de trabalho em branco.", d: "Entre em <b>office.com</b> com uma conta Microsoft (é grátis criar uma) e abra o Excel. Atalho: depois de entrar, digite <b>excel.new</b> na barra do navegador.", c: "0.1 e 0.4" },
+  { t: "Dê o nome <b>Meus gastos</b> ao arquivo.", d: "Clique no nome do arquivo, lá no alto da tela, e digite o nome novo.", c: "0.4" },
+  { t: "Renomeie a aba <b>Planilha1</b> para o <b>mês passado</b> (ex.: Outubro).", d: "Dois cliques no nome da aba, digite e aperte Enter. Ou botão direito na aba › Renomear.", c: "0.2" },
+  { t: "Crie uma <b>aba nova</b> e dê a ela o nome do <b>mês atual</b>.", d: "O <b>+</b> fica ao lado das abas, lá embaixo. Depois, renomeie como no item anterior.", c: "0.2" },
+  { t: "Na aba do mês passado, escreva <b>Categoria</b> em A1, <b>Valor</b> em B1 e, embaixo, <b>3 gastos seus</b> (nome na coluna A, valor na coluna B).", d: "Clique na célula, digite e aperte Enter. Digite só os números no valor, sem R$.", c: "0.1" },
+  { t: "Faça o mesmo na aba do <b>mês atual</b>.", d: "Clique na aba do mês atual, lá embaixo, e repita o item anterior.", c: "0.2" },
+  { t: "Selecione os 3 valores do mês atual e leia a <b>Soma</b> na barra de status. Anote aqui: <input class='inp mini' id='soma' placeholder='soma' aria-label='Soma lida na barra de status'>", d: "Clique no primeiro valor, segure e arraste até o último. A soma aparece no canto inferior direito.", c: "0.3" },
+  { t: "Deixe os títulos <b>Categoria</b> e <b>Valor</b> em <b>negrito</b> nas duas abas.", d: "Selecione A1 e B1 e clique no <b>N</b> (Página Inicial › grupo Fonte), ou use <kbd>Ctrl</kbd> + <kbd>N</kbd>.", c: "0.3" },
+  { t: "Baixe uma <b>cópia .xlsx</b> e encontre o arquivo na pasta <b>Downloads</b> do computador.", d: "Arquivo › Salvar como › Baixar uma Cópia.", c: "0.4" },
+  { t: "<b>Bônus:</b> exporte a aba do mês atual como <b>CSV</b> e abra o arquivo no Bloco de Notas (Windows) ou no TextEdit (Mac). Repare: só texto, separado por ponto e vírgula.", d: "Com a aba do mês atual aberta: Arquivo › Exportar › Baixar esta planilha como CSV.", c: "0.4" },
+];
+let feito = {};
+try { feito = JSON.parse(localStorage.getItem("hubredi-excel-m0-mini") || "{}"); } catch (e) { feito = {}; }
+const salvar = () => { try { localStorage.setItem("hubredi-excel-m0-mini", JSON.stringify(feito)); } catch (e) {} };
+function render() {
+  $("#lista").innerHTML = ITENS.map((it, i) => '<li class="' + (feito[i] ? "ok" : "") + '"><label class="chk"><input type="checkbox" data-i="' + i + '"' + (feito[i] ? " checked" : "") + '><span>' + it.t + '</span></label><details><summary>Travou? Ver dica</summary>' + it.d + ' <span class="cap">Cápsula ' + it.c + "</span></details></li>").join("");
+  if (feito.soma) $("#soma").value = feito.soma;
+  const n = ITENS.filter((_, i) => feito[i]).length, obrig = ITENS.length - 1, nObrig = ITENS.slice(0, obrig).filter((_, i) => feito[i]).length;
+  $("#prog").textContent = n + " de " + ITENS.length + " feitas";
+  $("#barra").style.width = (100 * n) / ITENS.length + "%";
+  $("#fim").classList.toggle("hide", nObrig < obrig);
+  if (nObrig >= obrig) { try { const p = JSON.parse(localStorage.getItem("hubredi-progresso") || "{}"); if (!p[window.CAPSULA_ID]) { p[window.CAPSULA_ID] = Date.now(); localStorage.setItem("hubredi-progresso", JSON.stringify(p)); } } catch (e) {} }
+  document.querySelectorAll("#lista input[type=checkbox]").forEach((c) => (c.onchange = () => { feito[c.dataset.i] = c.checked; salvar(); render(); }));
+  $("#soma").oninput = (e) => { feito.soma = e.target.value; salvar(); };
+}
+document.querySelectorAll("#aval .op").forEach((b) => (b.onclick = () => {
+  document.querySelectorAll("#aval .op").forEach((x) => x.classList.remove("right"));
+  b.classList.add("right");
+  $("#avalout").innerHTML = [
+    '<div class="fbk ok"><b>Excelente! 🎉</b>Você aplicou o Módulo 0 sozinho: esse é o nosso critério de aprendizado. Pode seguir para o Módulo 1.</div>',
+    '<div class="fbk ok"><b>Muito bom!</b>Usar uma ou duas dicas é normal. Daqui a uns dias, tente refazer o mini projeto num arquivo novo, sem dicas: se conseguir, o conteúdo grudou.</div>',
+    '<div class="fbk info"><b>Tudo bem, faz parte!</b>Revise as cápsulas indicadas nas dicas que você abriu e refaça o mini projeto num arquivo novo. Quando sair sem consultar, siga para o Módulo 1.</div>',
+  ][+b.dataset.k];
+}));
+render();
+</script>

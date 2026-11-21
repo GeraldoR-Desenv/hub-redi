@@ -1,0 +1,10 @@
+# Configuração da Netlify: o site já vem pronto (gerado por fonte/build.py),
+# então não há comando de build; a Netlify só publica a pasta raiz.
+[build]
+  publish = "."
+
+# A pasta de código-fonte não precisa ser servida.
+[[redirects]]
+  from = "/fonte/*"
+  to = "/404.html"
+  status = 404

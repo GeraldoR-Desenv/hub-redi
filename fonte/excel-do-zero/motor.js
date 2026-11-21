@@ -1,0 +1,598 @@
+"use strict";
+// =====================================================================
+//  Excel do Zero — motor da janela simulada do Excel online
+//  (o mesmo em todas as cápsulas; cada cápsula acrescenta só o conteúdo)
+// =====================================================================
+const $ = (s, el = document) => el.querySelector(s);
+const $$ = (s, el = document) => Array.from(el.querySelectorAll(s));
+const espera = (ms) => new Promise((r) => setTimeout(r, ms));
+const COLS = ["A", "B", "C", "D", "E", "F", "G"];
+const NLIN = 10;
+const GUIAS = ["Arquivo", "Página Inicial", "Inserir", "Desenhar", "Layout da Página", "Fórmulas", "Dados", "Revisão", "Exibir", "Automatizar", "Ajuda"];
+
+// ---------- arquivo padrão do Módulo 0: "Gastos do mês" ----------
+const JAN = { A1: "Categoria", B1: "Valor (R$)", A2: "Aluguel", B2: 1200, A3: "Mercado", B3: 650, A4: "Luz", B4: 140, A5: "Água", B5: 85, A6: "Internet", B6: 100, A7: "Transporte", B7: 220, A8: "Total", B8: "=SOMA(B2:B7)" };
+const FEV = { A1: "Categoria", B1: "Valor (R$)", A2: "Aluguel", B2: 1200, A3: "Mercado", B3: 720, A4: "Luz", B4: 155, A5: "Água", B5: 90, A6: "Internet", B6: 100, A7: "Transporte", B7: "=4*45", A8: "Total", B8: "=SOMA(B2:B7)" };
+const ARQ_GASTOS = { nome: "Gastos do mês", larguras: { A: 118, B: 96 }, abas: [{ nome: "Janeiro", dados: JAN }, { nome: "Fevereiro", dados: FEV }], grafico: { rot: ["A2", "A7"], val: ["B2", "B7"], titulo: "Gastos de janeiro" } };
+
+// ---------- ícones da Faixa de Opções ----------
+const sv = (d, extra = "") => '<svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + (d ? '<path d="' + d + '"/>' : "") + extra + "</svg>";
+const ICO = {
+  desf: sv("M9 14L4 9l5-5M4 9h10a6 6 0 010 12h-3"),
+  ref: sv("M15 14l5-5-5-5M20 9H10a6 6 0 000 12h3"),
+  colar: '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5" y="4" width="14" height="17" rx="2"/><rect x="9" y="2.5" width="6" height="4" rx="1" fill="#fafafa"/></svg>',
+  copiar: sv("", '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 00-1-1H5a1 1 0 00-1 1v10a1 1 0 001 1h3"/>'),
+  bordas: sv("M4 12h16M12 4v16", '<rect x="4" y="4" width="16" height="16"/>'),
+  fill: sv("M6 11l6-6 6 6-6 6z", '<rect x="3" y="19.5" width="18" height="3" fill="#8fbdf0" stroke="none"/>'),
+  cor: '<svg viewBox="0 0 24 24" width="17" height="17"><text x="12" y="15" text-anchor="middle" font-size="15" font-weight="700" fill="currentColor" font-family="Segoe UI,Arial">A</text><rect x="3" y="19.5" width="18" height="3" fill="#d13438"/></svg>',
+  esq: sv("M4 6h16M4 10h10M4 14h16M4 18h10"),
+  centro: sv("M4 6h16M7 10h10M4 14h16M7 18h10"),
+  dir: sv("M4 6h16M10 10h10M4 14h16M10 18h10"),
+  quebra: sv("M4 6h16M4 12h13a3 3 0 010 6h-4M13 16l-2 2 2 2M4 18h5"),
+};
+const RB = (cmd, title, inner, cls = "") => '<button class="rb ' + cls + '" data-cmd="' + cmd + '" title="' + title + '">' + inner + "</button>";
+const GRP = (nome, ctl) => '<div class="grp" data-grp="' + nome + '"><div class="ctl">' + ctl + '</div><div class="nm">' + nome + "</div></div>";
+const FAIXA =
+  GRP("Desfazer", RB("desfazer", "Desfazer (Ctrl+Z)", ICO.desf) + RB("refazer", "Refazer (Ctrl+Y)", ICO.ref)) +
+  GRP("Área de Transferência", RB("colar", "Colar (Ctrl+V)", ICO.colar + "<span>Colar</span>", "big") + '<div class="col">' + RB("recortar", "Recortar (Ctrl+X)", "✂") + RB("copiar", "Copiar (Ctrl+C)", ICO.copiar) + "</div>") +
+  GRP("Fonte", '<div class="col"><div class="r">' + RB("fonte", "Fonte", "Aptos Narrow <span>▼</span>", "dd w1") + RB("tamanho", "Tamanho da Fonte", "11 <span>▼</span>", "dd") + '</div><div class="r">' + RB("neg", "Negrito (Ctrl+N)", "<b>N</b>") + RB("ita", "Itálico (Ctrl+I)", '<i style="font-family:Georgia,serif">I</i>') + RB("sub", "Sublinhado (Ctrl+S)", "<u>S</u>") + '<span class="sep"></span>' + RB("bordas", "Bordas", ICO.bordas) + RB("fill", "Cor de Preenchimento", ICO.fill) + RB("corfonte", "Cor da Fonte", ICO.cor) + "</div></div>") +
+  GRP("Alinhamento", '<div class="col"><div class="r">' + RB("esq", "Alinhar à Esquerda", ICO.esq) + RB("centro", "Centralizar", ICO.centro) + RB("dir", "Alinhar à Direita", ICO.dir) + '</div><div class="r">' + RB("quebra", "Quebrar Texto Automaticamente", ICO.quebra) + "</div></div>") +
+  GRP("Número", '<div class="col"><div class="r">' + RB("formato", "Formato de Número", "Geral <span>▼</span>", "dd w2") + '</div><div class="r">' + RB("moeda", "Formato de Número de Contabilidade", "R$") + RB("pct", "Estilo de Porcentagem", "%") + RB("mil", "Separador de Milhares", "000") + "</div></div>") +
+  GRP("Edição", RB("autosoma", "AutoSoma (Alt+=)", '<span style="font-size:19px;line-height:1">Σ</span><span>AutoSoma</span>', "big"));
+const FORMATOS = ["neg", "ita", "sub", "fill"];
+const NOME_CMD = { neg: "Negrito", ita: "Itálico", sub: "Sublinhado", fill: "Cor de Preenchimento" };
+const MODULO_CMD = { desfazer: 1, refazer: 1, colar: 2, recortar: 2, copiar: 2, fonte: 3, tamanho: 3, bordas: 3, corfonte: 3, esq: 3, centro: 3, dir: 3, quebra: 3, formato: 3, moeda: 3, pct: 3, mil: 3, autosoma: 4 };
+const ZONAS = {
+  titulo: ["a <b>barra de título</b>", "Ela mostra o nome do arquivo."],
+  guias: ["as <b>guias</b> da Faixa de Opções", "Elas trocam o conjunto de botões que aparece embaixo."],
+  botoes: ["os <b>botões</b> da Faixa de Opções", "Eles aplicam comandos, como negrito e cores."],
+  "caixa-nome": ["a <b>Caixa de Nome</b>", "Ela mostra o endereço da célula selecionada."],
+  fx: ["o botão <b>fx</b>", "Ele serve para inserir funções (vamos usar no Módulo 4)."],
+  "barra-formulas": ["a <b>Barra de Fórmulas</b>", "Ela mostra o <b>conteúdo</b> da célula, não o endereço."],
+  grade: ["uma <b>célula</b> da grade", ""],
+  "cab-col": ["um <b>cabeçalho de coluna</b>", "As letras identificam as colunas."],
+  "cab-lin": ["um <b>cabeçalho de linha</b>", "Os números identificam as linhas."],
+  abas: ["as <b>abas</b>", "Cada aba guarda uma parte dos dados do arquivo."],
+  status: ["a <b>barra de status</b>", "Ela mostra cálculos rápidos da seleção."],
+  zoom: ["o <b>zoom</b>", "Ele muda o tamanho na tela, não os dados."],
+};
+
+// ---------- utilidades de endereço e número ----------
+const partes = (a) => { const m = a.match(/^([A-Z])(\d+)$/); return [COLS.indexOf(m[1]), +m[2]]; };
+function limites(a, b) { const [c1, r1] = partes(a), [c2, r2] = partes(b); return { c1: Math.min(c1, c2), c2: Math.max(c1, c2), r1: Math.min(r1, r2), r2: Math.max(r1, r2) }; }
+function celulas(a, b) { const L = limites(a, b), out = []; for (let r = L.r1; r <= L.r2; r++) for (let c = L.c1; c <= L.c2; c++) out.push(COLS[c] + r); return out; }
+function rotulo(a, b) { const L = limites(a, b); const x = COLS[L.c1] + L.r1, y = COLS[L.c2] + L.r2; return x === y ? x : x + ":" + y; }
+const fmtNum = (v) => String(Math.round(v * 1e10) / 1e10).replace(".", ",");
+function lerNumBR(s) { s = String(s).trim(); if (/^-?\d+(,\d+)?$/.test(s)) return Number(s.replace(",", ".")); if (/^-?\d+\.\d+$/.test(s)) return Number(s); return null; }
+
+// =============== componente: janela do Excel online ===============
+class Janela {
+  constructor(host, { interativo = false, aoEvento = null, arquivo = ARQ_GASTOS, editaveis = null, msgTravada = "Neste exercício essa célula está protegida." } = {}) {
+    this.inter = interativo; this.aoEvento = aoEvento; this.geracao = 0; this.cfg = arquivo; this.arqInicial = arquivo;
+    this.editaveis = editaveis; this.msgTravada = msgTravada; this.editando = false; this.grafOn = false;
+    const linhas = Array.from({ length: NLIN }, (_, i) => '<tr><th data-z="cab-lin" data-r="' + (i + 1) + '">' + (i + 1) + "</th>" + COLS.map((c) => '<td data-z="grade" data-a="' + c + (i + 1) + '"></td>').join("") + "</tr>").join("");
+    host.innerHTML =
+      '<div class="xo">' +
+      '<div class="xo-top" data-z="titulo" data-p="titulo"><span class="app"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18"/></svg>Excel</span><span class="as" data-p="autosave"></span><span class="arq" data-p="arquivo"></span><span class="salvo" data-p="salvo">· Salvo</span><span class="busca">🔍 Pesquisar</span></div>' +
+      '<div class="xo-guias" data-z="guias" data-p="guias">' + GUIAS.map((g) => '<button data-guia="' + g + '" class="' + (g === "Página Inicial" ? "on" : "") + '">' + g + "</button>").join("") + "</div>" +
+      '<div class="xo-botoes" data-z="botoes" data-p="botoes">' + FAIXA + "</div>" +
+      '<div class="xo-fx"><div class="nb" data-z="caixa-nome" data-p="nb" title="Caixa de Nome">A1</div><div class="fxl" data-z="fx" title="Inserir Função">fx</div><div class="fb" data-z="barra-formulas" data-p="fb" title="Barra de Fórmulas"></div></div>' +
+      '<div class="xo-grade" data-p="grade"><div class="gin"><table class="g"><colgroup><col data-col="rh">' + COLS.map((c) => '<col data-col="' + c + '">').join("") + '</colgroup><tr><th class="corner" data-z="grade"></th>' + COLS.map((c) => '<th data-z="cab-col" data-c="' + c + '">' + c + "</th>").join("") + "</tr>" + linhas + '</table><div class="selbox"></div><div class="graf" data-p="graf"></div><input class="cellin" aria-label="Digitar na célula" autocomplete="off" spellcheck="false"></div></div>' +
+      '<div class="xo-abas" data-z="abas" data-p="abas"><button class="nav" data-nav title="Rolar abas">◀</button><button class="nav" data-nav title="Rolar abas">▶</button><button class="add" data-add title="Nova Planilha">+</button><div class="abas-lista"></div></div>' +
+      '<div class="xo-status" data-z="status" data-p="status"><span>Pronto</span><div class="calc" data-p="calc"></div><div class="zoom" data-z="zoom" data-p="zoom"><button data-zoom="-" title="Diminuir zoom">−</button><div class="trilho"><i></i></div><button data-zoom="+" title="Aumentar zoom">+</button><span class="zl">100%</span></div></div>' +
+      '<div class="caderno" data-p="caderno"></div><div class="painel" data-p="painel"></div><div class="bloco" data-p="bloco"></div><div class="dlg" data-p="dlg"></div><div class="baixa" data-p="baixa"></div>' +
+      '<div class="spot"></div><svg class="cursor" viewBox="0 0 24 24"><path d="M3 2l7 19 2.6-7.9L20.5 10z" fill="#fff" stroke="#111" stroke-width="1.6" stroke-linejoin="round"/></svg><div class="balao"></div><div class="toast"></div><div class="key"></div>' +
+      "</div>";
+    this.el = $(".xo", host);
+    this.carregarArquivo(arquivo);
+    if (interativo) this.ligar();
+    if (window.ResizeObserver) new ResizeObserver(() => { this.posSel(); this.desenhaGrafico(); }).observe(this.el);
+  }
+  // ----- estado -----
+  carregarArquivo(cfg) {
+    this.cfg = cfg;
+    $(".arq", this.el).textContent = cfg.nome;
+    this.reset();
+  }
+  cancelarAnimacoes() { this.geracao++; } // qualquer animação em andamento para no próximo w()
+  reset() {
+    this.folhas = {};
+    this.cfg.abas.forEach((a) => (this.folhas[a.nome] = { raw: { ...a.dados }, fmt: JSON.parse(JSON.stringify(a.fmt || {})) }));
+    this.ordem = this.cfg.abas.map((a) => a.nome);
+    this.contPlanilha = this.cfg.proxPlanilha || this.ordem.length + 1;
+    this.ativa = this.cfg.abas[0].nome; this.renderAbas(); this.zoom = 100; this.sel = { a: "A1", b: "A1" };
+    this.editando = false; this.grafOn = false;
+    $(".graf", this.el).classList.remove("on", "cresce");
+    $(".caderno", this.el).classList.remove("on");
+    this.fecharPainel(); this.fecharMenu(); this.fecharBloco(); this.dialogo(null);
+    this.baixados = []; $(".baixa", this.el).classList.remove("on");
+    this.setModo(this.cfg.modo || "online", this.cfg.nome, false);
+    this.spot(null); this.balao(null); this.limparDestaque();
+    this.render();
+  }
+  f() { return this.folhas[this.ativa]; }
+  // ----- abas: criar, renomear, validar -----
+  renderAbas() { $(".abas-lista", this.el).innerHTML = this.ordem.map((n) => '<div class="tabx" data-aba="' + n.replace(/"/g, "&quot;") + '">' + n.replace(/</g, "&lt;") + "</div>").join(""); }
+  tab(nome) { return $$(".tabx", this.el).find((t) => t.dataset.aba === nome); }
+  novaAba() {
+    if (this.ordem.length >= 6) { this.toast("Para manter a tela simples, aqui o arquivo pode ter no máximo 6 abas."); return null; }
+    let nome; do { nome = "Planilha" + this.contPlanilha++; } while (this.folhas[nome]);
+    this.folhas[nome] = { raw: {}, fmt: {} };
+    this.ordem.splice(this.ordem.indexOf(this.ativa) + 1, 0, nome);
+    this.renderAbas(); this.trocarAba(nome);
+    return nome;
+  }
+  validarNome(novo, antigo) {
+    const n = novo.trim();
+    if (n === "") return "O nome da aba não pode ficar em branco.";
+    if (n.length > 31) return "O nome da aba pode ter no máximo <b>31 caracteres</b> (o seu tem " + n.length + ").";
+    const proib = n.match(/[\\\/?*\[\]:]/);
+    if (proib) return "O Excel não aceita o símbolo <b>" + proib[0] + "</b> em nome de aba. Proibidos: <b>/ \\ ? * [ ] :</b>";
+    if (/^'|'$/.test(n)) return "O nome da aba não pode começar nem terminar com apóstrofo (').";
+    if (n.toLowerCase() !== antigo.toLowerCase() && this.ordem.some((o) => o.toLowerCase() === n.toLowerCase())) return "Já existe uma aba chamada <b>" + n + "</b> neste arquivo. Cada aba precisa de um nome diferente.";
+    return null;
+  }
+  renomear(antigo, novo) {
+    const erro = this.validarNome(novo, antigo); if (erro) return erro;
+    const n = novo.trim(); if (n === antigo) return null;
+    this.folhas[n] = this.folhas[antigo]; delete this.folhas[antigo];
+    this.ordem[this.ordem.indexOf(antigo)] = n;
+    if (this.ativa === antigo) this.ativa = n;
+    this.renderAbas(); this.render(); return null;
+  }
+  abrirEdicaoAba(nome, aoTerminar) {
+    const t = this.tab(nome); if (!t) return null;
+    t.innerHTML = '<input class="tabin" value="' + nome.replace(/"/g, "&quot;") + '" maxlength="40" spellcheck="false">';
+    const inp = $(".tabin", t); let feito = false;
+    const fim = (confirmar) => {
+      if (feito) return; feito = true;
+      const novo = inp.value;
+      if (!confirmar) { this.renderAbas(); this.render(); return; }
+      const erro = this.renomear(nome, novo);
+      if (erro) { this.renderAbas(); this.render(); this.toast(erro, "bad", 4200); }
+      aoTerminar && aoTerminar(erro, novo.trim());
+    };
+    inp.addEventListener("keydown", (ev) => { ev.stopPropagation(); if (ev.key === "Enter") { ev.preventDefault(); fim(true); } if (ev.key === "Escape") fim(false); });
+    inp.addEventListener("blur", () => fim(true));
+    inp.addEventListener("pointerdown", (ev) => ev.stopPropagation());
+    inp.focus(); inp.select();
+    return inp;
+  }
+  // menu do botão direito na aba
+  abrirMenu(nome, x, y) {
+    this.fecharMenu();
+    const m = document.createElement("div"); m.className = "menu";
+    m.innerHTML = ["Inserir", "Excluir", "Renomear", "Mover ou Copiar", "Cor da Guia", "Ocultar"].map((o) => '<button data-op="' + o + '">' + o + "</button>").join("");
+    this.el.appendChild(m);
+    const b = this.el.getBoundingClientRect();
+    m.style.left = Math.min(x - b.left, b.width - 170) + "px"; m.style.top = Math.max(4, y - b.top - m.offsetHeight) + "px";
+    m.addEventListener("pointerdown", (ev) => ev.stopPropagation());
+    m.addEventListener("click", (ev) => {
+      const op = ev.target.closest("[data-op]"); if (!op) return; ev.stopPropagation(); this.fecharMenu();
+      if (op.dataset.op === "Renomear") this.iniciarRenomear(nome);
+      else if (op.dataset.op === "Inserir") { const n = this.novaAba(); if (n) this.emit({ tipo: "nova-aba", nome: n }); }
+      else this.toast("<b>" + op.dataset.op + "</b>: vamos ver no <b>Módulo 2</b>, junto com mover, colorir e duplicar abas.");
+    });
+  }
+  fecharMenu() { $$(".menu", this.el).forEach((m) => m.remove()); }
+  iniciarRenomear(nome) {
+    if (this.ativa !== nome) this.trocarAba(nome);
+    this.abrirEdicaoAba(nome, (erro, novo) => { if (erro) this.emit({ tipo: "renomear-erro", de: nome, tentativa: novo, msg: erro }); else if (novo !== nome) this.emit({ tipo: "renomear", de: nome, para: novo }); });
+  }
+  // ----- painel "Novo" com modelos -----
+  abrirPainel(html) { const p = $(".painel", this.el); p.innerHTML = html; p.style.top = $(".xo-guias", this.el).offsetTop + "px"; p.classList.add("on"); }
+  fecharPainel() { $(".painel", this.el).classList.remove("on"); }
+  td(a) { return $('td[data-a="' + a + '"]', this.el); }
+  valor(a) {
+    const r = this.f().raw[a];
+    if (r === undefined || r === "") return "";
+    if (typeof r === "number") return r;
+    if (r.startsWith("=")) return this.calc(r.slice(1).toUpperCase());
+    return r;
+  }
+  num(t) { if (/^[A-Z]\d+$/.test(t)) { const v = this.valor(t); return typeof v === "number" ? v : 0; } return Number(t.replace(",", ".")); }
+  calc(s) { // mini motor: SOMA(intervalo) e uma conta simples entre dois termos
+    let m = s.match(/^SOMA\(([A-Z]\d+):([A-Z]\d+)\)$/);
+    if (m) return celulas(m[1], m[2]).reduce((t, a) => { const v = this.valor(a); return t + (typeof v === "number" ? v : 0); }, 0);
+    m = s.match(/^([A-Z]\d+|\d+(?:,\d+)?)([+\-*\/])([A-Z]\d+|\d+(?:,\d+)?)$/);
+    if (m) { const x = this.num(m[1]), y = this.num(m[3]); return m[2] === "+" ? x + y : m[2] === "-" ? x - y : m[2] === "*" ? x * y : y === 0 ? "#DIV/0!" : x / y; }
+    return "#NOME?";
+  }
+  celulasSel() { return celulas(this.sel.a, this.sel.b); }
+  setSel(a, b = a) { this.sel = { a, b }; this.render(); }
+  trocarAba(nome) { this.ativa = nome; this.sel = { a: "A1", b: "A1" }; this.render(); }
+  setZoom(z) { this.zoom = Math.max(50, Math.min(200, z)); this.render(); }
+  setValor(a, v) { this.f().raw[a] = v; this.render(); this.indicarSalvando(); }
+  // ----- salvar: Excel online (automático) x Excel instalado -----
+  setModo(modo, nome, autosave = false) {
+    this.modo = modo; this.autosave = autosave; this.nomeArq = nome; clearTimeout(this._ts);
+    $(".arq", this.el).textContent = modo === "desktop" ? nome + " - Excel" : nome;
+    $(".as", this.el).innerHTML = modo === "desktop" ? 'AutoSalvamento <i class="sw' + (autosave ? " on" : "") + '"></i> ' + (autosave ? "Ativado" : "Desativado") : "";
+    $(".salvo", this.el).textContent = modo === "desktop" ? (autosave ? "· Salvo no OneDrive" : "") : "· Salvo";
+    $(".busca", this.el).style.visibility = modo === "desktop" ? "hidden" : "";
+  }
+  indicarSalvando() {
+    const s = $(".salvo", this.el);
+    if (this.modo === "desktop" && !this.autosave) { s.textContent = "· Não salvo"; return; }
+    s.textContent = "· Salvando…"; clearTimeout(this._ts);
+    this._ts = setTimeout(() => (s.textContent = this.modo === "desktop" ? "· Salvo no OneDrive" : "· Salvo"), 1100);
+  }
+  // ----- menu Arquivo (tela cheia, como no Excel online) -----
+  abrirArquivo(secao = "Início") {
+    const SECOES = ["Início", "Novo", "Abrir", "Informações", "Salvar como", "Imprimir", "Compartilhar", "Exportar"];
+    const recentes = (this.cfg.recentes || [[this.cfg.nome + ".xlsx", "OneDrive › Documentos"], ["Cadastro de vendedores.xlsx", "OneDrive › Documentos"], ["Controle de estoque.xlsx", "OneDrive › Loja"]]);
+    const op = (acao, tit, desc, ico) => '<button class="bk-op" data-bk-acao="' + acao + '"><span class="bk-ico">' + ico + '</span><span><b>' + tit + "</b><small>" + desc + "</small></span></button>";
+    let corpo;
+    if (secao === "Início" || secao === "Abrir") corpo = "<h4>" + (secao === "Início" ? "Recentes" : "Abrir") + '</h4><div class="bk-lista">' + recentes.map(([n, l]) => '<div class="bk-arq" data-bk-abrir="' + n + '"><span class="bk-x">' + (n.split(".").pop().toUpperCase()) + "</span><span><b>" + n + "</b><small>" + l + "</small></span></div>").join("") + "</div>";
+    else if (secao === "Salvar como") corpo = "<h4>Salvar como</h4>" + op("salvar-online", "Salvar como", "Salvar uma cópia online (no OneDrive)", "💾") + op("renomear-arq", "Renomear", "Renomear esta pasta de trabalho", "✏️") + op("copia", "Baixar uma Cópia", "Baixar uma cópia no seu computador (.xlsx)", "⬇️") + op("ods", "Baixar como ODS", "Baixar uma cópia como arquivo ODS", "⬇️");
+    else if (secao === "Exportar") corpo = "<h4>Exportar</h4>" + op("csv", "Baixar esta planilha como CSV (.csv)", "Só os dados da aba aberta, como texto", "📄") + op("pdf", "Baixar como PDF", "Para ler ou imprimir, sem editar", "📕");
+    else corpo = "<h4>" + secao + '</h4><p class="bk-vazio">Esta parte do menu Arquivo aparece em outros módulos do curso.</p>';
+    const p = $(".painel", this.el);
+    p.innerHTML = '<div class="bk"><nav><button class="bk-volta" data-bk-voltar title="Voltar à planilha">←</button>' + SECOES.map((s) => '<button data-bk-sec="' + s + '" class="' + (s === secao ? "on" : "") + '">' + s + "</button>").join("") + '</nav><div class="bk-corpo">' + corpo + "</div></div>";
+    p.style.top = $(".xo-guias", this.el).offsetTop + "px"; p.classList.add("on", "arq");
+    this.secaoArq = secao;
+  }
+  fecharArquivo() { const p = $(".painel", this.el); p.classList.remove("on", "arq"); this.secaoArq = null; }
+  nomeDownload(acao) { const base = this.nomeArq.replace(/\.xlsx$/, ""); return acao === "csv" ? base + " - " + this.ativa + ".csv" : base + (acao === "pdf" ? ".pdf" : acao === "ods" ? ".ods" : ".xlsx"); }
+  baixar(acao) {
+    const nome = this.nomeDownload(acao);
+    this.baixados.push({ acao, nome, aba: this.ativa });
+    const b = $(".baixa", this.el);
+    b.innerHTML = '<span class="bx-ico">' + nome.split(".").pop().toUpperCase() + "</span><span><b>" + nome + "</b><small>Download concluído · pasta Downloads</small></span>";
+    b.classList.remove("on"); void b.offsetWidth; b.classList.add("on");
+    return nome;
+  }
+  acaoArquivo(acao) {
+    if (["copia", "csv", "pdf", "ods"].includes(acao)) {
+      this.fecharArquivo(); const nome = this.baixar(acao);
+      if (acao === "csv") this.mostrarCSV();
+      this.emit({ tipo: "arquivo", acao, nome, aba: this.ativa });
+    } else if (acao === "salvar-online") { this.toast("<b>Salvar como</b> cria uma cópia com outro nome no OneDrive. Aqui no curso, o arquivo original já está salvo."); this.emit({ tipo: "arquivo", acao }); }
+    else if (acao === "renomear-arq") { this.toast("Para renomear o arquivo, também dá para clicar no <b>nome dele</b>, lá no alto da tela."); this.emit({ tipo: "arquivo", acao }); }
+  }
+  // texto do CSV da aba aberta: valores (não fórmulas), separados por ponto e vírgula
+  textoCSV() {
+    let ultL = 0, ultC = 0;
+    Object.keys(this.f().raw).forEach((a) => { const [c, r] = partes(a); ultL = Math.max(ultL, r); ultC = Math.max(ultC, c); });
+    const linhas = [];
+    for (let r = 1; r <= ultL; r++) { const l = []; for (let c = 0; c <= ultC; c++) { const v = this.valor(COLS[c] + r); l.push(typeof v === "number" ? fmtNum(v) : v); } linhas.push(l.join(";")); }
+    return linhas.join("\n");
+  }
+  mostrarCSV() {
+    const b = $(".bloco", this.el), nome = this.nomeDownload("csv");
+    b.innerHTML = '<div class="bl-top"><span>' + nome + ' — Bloco de Notas</span><button data-bl-fechar title="Fechar">✕</button></div><pre></pre>';
+    $("pre", b).textContent = this.textoCSV();
+    b.classList.add("on");
+  }
+  fecharBloco() { $(".bloco", this.el).classList.remove("on"); }
+  dialogo(html) { const d = $(".dlg", this.el); if (!html) { d.classList.remove("on"); return; } d.innerHTML = html; d.classList.add("on"); }
+  aplicar(cmd) {
+    if (!FORMATOS.includes(cmd)) return false;
+    const f = this.f(), cs = this.celulasSel(), todos = cs.every((a) => f.fmt[a] && f.fmt[a][cmd]);
+    cs.forEach((a) => { f.fmt[a] = f.fmt[a] || {}; f.fmt[a][cmd] = !todos; });
+    this.render(); return true;
+  }
+  podeEditar(a) { return this.editaveis === "todas" || (Array.isArray(this.editaveis) && this.editaveis.includes(a)); }
+  // ----- desenho -----
+  render() {
+    const f = this.f(), z = this.zoom / 100, larg = this.cfg.larguras || {};
+    this.el.style.setProperty("--z", z);
+    $$("col", this.el).forEach((c) => (c.style.width = (c.dataset.col === "rh" ? 36 : larg[c.dataset.col] || 72) * z + "px"));
+    $$(".g td", this.el).forEach((td) => {
+      const a = td.dataset.a, v = this.valor(a), k = f.fmt[a] || {};
+      td.textContent = v === "" ? "" : typeof v === "number" ? fmtNum(v) : v;
+      td.className = [typeof v === "number" ? "num" : "", k.neg ? "neg" : "", k.ita ? "ita" : "", k.sub ? "sub" : "", k.fill ? "fill" : "", td.classList.contains("guia") ? "guia" : ""].join(" ").trim();
+    });
+    const cs = this.celulasSel(), L = limites(this.sel.a, this.sel.b);
+    cs.forEach((a) => { if (a !== this.sel.a) this.td(a).classList.add("insel"); });
+    $$(".g th[data-c]", this.el).forEach((th) => { const i = COLS.indexOf(th.dataset.c); th.classList.toggle("on", i >= L.c1 && i <= L.c2); });
+    $$(".g th[data-r]", this.el).forEach((th) => { const r = +th.dataset.r; th.classList.toggle("on", r >= L.r1 && r <= L.r2); });
+    $(".nb", this.el).textContent = this.sel.a;
+    const r = f.raw[this.sel.a];
+    $(".fb", this.el).textContent = r === undefined ? "" : typeof r === "number" ? fmtNum(r) : r;
+    $$(".tabx", this.el).forEach((t) => t.classList.toggle("on", t.dataset.aba === this.ativa));
+    const vals = cs.map((a) => this.valor(a)).filter((v) => v !== ""), nums = vals.filter((v) => typeof v === "number");
+    let st = "";
+    if (cs.length > 1 && vals.length >= 2) {
+      if (nums.length) { const s = nums.reduce((t, v) => t + v, 0); st = "<span>Média: " + fmtNum(Math.round((s / nums.length) * 100) / 100) + "</span><span>Contagem: " + vals.length + "</span><span>Soma: " + fmtNum(s) + "</span>"; }
+      else st = "<span>Contagem: " + vals.length + "</span>";
+    }
+    $(".calc", this.el).innerHTML = st;
+    $(".zl", this.el).textContent = this.zoom + "%";
+    $(".trilho i", this.el).style.left = Math.max(0, Math.min(76, ((this.zoom - 50) / 150) * 76)) + "px";
+    const k = f.fmt[this.sel.a] || {};
+    FORMATOS.forEach((c) => { if (c !== "fill") $('[data-cmd="' + c + '"]', this.el).classList.toggle("on", !!k[c]); });
+    this.posSel(); this.desenhaGrafico();
+  }
+  posSel() {
+    const L = limites(this.sel.a, this.sel.b), tl = this.td(COLS[L.c1] + L.r1), br = this.td(COLS[L.c2] + L.r2), box = $(".selbox", this.el);
+    if (!tl || !br) return;
+    box.style.left = tl.offsetLeft - 1 + "px"; box.style.top = tl.offsetTop - 1 + "px";
+    box.style.width = br.offsetLeft + br.offsetWidth - tl.offsetLeft + 1 + "px"; box.style.height = br.offsetTop + br.offsetHeight - tl.offsetTop + 1 + "px";
+    const inp = $(".cellin", this.el), a = this.td(this.sel.a);
+    inp.style.left = a.offsetLeft + "px"; inp.style.top = a.offsetTop + "px"; inp.style.width = a.offsetWidth + "px"; inp.style.height = a.offsetHeight + "px";
+  }
+  flash(a) { const t = this.td(a); t.classList.remove("flash"); void t.offsetWidth; t.classList.add("flash"); }
+  flashFormulas() { Object.entries(this.f().raw).forEach(([a, r]) => { if (typeof r === "string" && r.startsWith("=")) this.flash(a); }); }
+  // ----- gráfico de barras (aparece sobre as colunas D a G) -----
+  grafico(on) { const g = $(".graf", this.el); this.grafOn = on; g.classList.remove("cresce"); if (on) { void g.offsetWidth; g.classList.add("cresce"); } this.desenhaGrafico(); }
+  desenhaGrafico() {
+    const g = $(".graf", this.el), G = this.cfg.grafico;
+    if (!this.grafOn || !G) { g.classList.remove("on"); return; }
+    const d1 = this.td("D1"), g8 = this.td("G" + Math.min(8, NLIN));
+    const left = d1.offsetLeft + 10, top = d1.offsetTop + 4, w = g8.offsetLeft + g8.offsetWidth - left - 8, h = g8.offsetTop + g8.offsetHeight - top - 4;
+    Object.assign(g.style, { left: left + "px", top: top + "px", width: w + "px", height: h + "px" });
+    const rot = celulas(G.rot[0], G.rot[1]).map((a) => String(this.valor(a))), val = celulas(G.val[0], G.val[1]).map((a) => { const v = this.valor(a); return typeof v === "number" ? v : 0; });
+    const max = Math.max(...val, 1), n = val.length, pad = 10, topo = 26, base = h - 34, bw = (w - pad * 2) / n;
+    let s = '<svg width="' + w + '" height="' + h + '" font-family="Segoe UI,Inter,sans-serif"><text x="' + w / 2 + '" y="17" text-anchor="middle" font-size="12" font-weight="600" fill="#333">' + G.titulo + "</text>";
+    val.forEach((v, i) => {
+      const bh = ((base - topo) * v) / max, x = pad + i * bw + bw * 0.18, y = base - bh;
+      s += '<rect class="bar" x="' + x + '" y="' + y + '" width="' + bw * 0.64 + '" height="' + bh + '" fill="#4472c4" rx="1"/>';
+      s += '<text x="' + (x + bw * 0.32) + '" y="' + (y - 3) + '" text-anchor="middle" font-size="10" fill="#444">' + fmtNum(v) + "</text>";
+      s += '<text x="' + (x + bw * 0.32) + '" y="' + (base + 13) + '" text-anchor="middle" font-size="9.5" fill="#555">' + rot[i].slice(0, 10) + "</text>";
+    });
+    s += '<line x1="' + pad + '" x2="' + (w - pad) + '" y1="' + base + '" y2="' + base + '" stroke="#bbb"/></svg>';
+    g.innerHTML = s; g.classList.add("on");
+  }
+  // ----- interação real (modo exercício) -----
+  emit(ev) { this.aoEvento && this.aoEvento(ev, this); }
+  focarEntrada() { if (!this.editaveis) return; const inp = $(".cellin", this.el); inp.value = ""; this.posSel(); inp.focus({ preventScroll: true }); }
+  commitEdicao() {
+    if (!this.editando) return;
+    const inp = $(".cellin", this.el), a = this.sel.a, v = inp.value.trim();
+    this.editando = false; inp.value = "";
+    const n = lerNumBR(v);
+    if (v === "") delete this.f().raw[a]; else this.f().raw[a] = n !== null ? n : v;
+    this.render(); this.flashFormulas(); this.indicarSalvando();
+    this.emit({ tipo: "edit", a, raw: this.f().raw[a], aba: this.ativa });
+  }
+  cancelarEdicao() { if (!this.editando) return; this.editando = false; $(".cellin", this.el).value = ""; this.render(); }
+  mover(dc, dr) { const [c, r] = partes(this.sel.a); const nc = Math.max(0, Math.min(COLS.length - 1, c + dc)), nr = Math.max(1, Math.min(NLIN, r + dr)); this.setSel(COLS[nc] + nr); this.focarEntrada(); }
+  ligar() {
+    const el = this.el, inp = $(".cellin", el);
+    el.addEventListener("pointerdown", (ev) => {
+      const z = ev.target.closest("[data-z]");
+      const td = ev.target.closest(".g td");
+      if (td) {
+        ev.preventDefault();
+        this.commitEdicao();
+        this.arrastando = true;
+        if (ev.shiftKey) this.setSel(this.sel.a, td.dataset.a); else this.setSel(td.dataset.a);
+        this.focarEntrada();
+      }
+      const thc = ev.target.closest(".g th[data-c]"), thr = ev.target.closest(".g th[data-r]");
+      if (thc || thr) this.commitEdicao();
+      if (thc) this.setSel(thc.dataset.c + "1", thc.dataset.c + NLIN);
+      if (thr) this.setSel("A" + thr.dataset.r, COLS[COLS.length - 1] + thr.dataset.r);
+      if (z) this.emit({ tipo: "zona", zona: z.dataset.z });
+      if (thc || thr) this.emit({ tipo: "sel", ...this.sel });
+    });
+    document.addEventListener("pointermove", (ev) => {
+      if (!this.arrastando) return;
+      const t = document.elementFromPoint(ev.clientX, ev.clientY);
+      const td = t && t.closest && t.closest(".g td");
+      if (td && el.contains(td) && td.dataset.a !== this.sel.b) this.setSel(this.sel.a, td.dataset.a);
+    });
+    document.addEventListener("pointerup", () => { if (this.arrastando) { this.arrastando = false; this.emit({ tipo: "sel", ...this.sel }); if (this.editaveis) inp.focus({ preventScroll: true }); } });
+    // digitação na célula selecionada
+    inp.addEventListener("input", () => {
+      const a = this.sel.a;
+      if (!this.editando) {
+        if (!this.podeEditar(a)) { inp.value = ""; this.toast(this.msgTravada); this.emit({ tipo: "travada", a }); return; }
+        this.editando = true;
+      }
+      const t = this.td(a); t.classList.add("edit"); t.textContent = inp.value; $(".fb", el).textContent = inp.value;
+    });
+    inp.addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter") { ev.preventDefault(); const ed = this.editando; this.commitEdicao(); this.mover(0, ev.shiftKey ? -1 : 1); if (!ed) this.emit({ tipo: "sel", ...this.sel }); return; }
+      if (ev.key === "Tab") { ev.preventDefault(); this.commitEdicao(); this.mover(1, 0); return; }
+      if (ev.key === "Escape") { this.cancelarEdicao(); return; }
+      if (!this.editando && ev.key.startsWith("Arrow")) { ev.preventDefault(); this.mover(ev.key === "ArrowRight" ? 1 : ev.key === "ArrowLeft" ? -1 : 0, ev.key === "ArrowDown" ? 1 : ev.key === "ArrowUp" ? -1 : 0); this.emit({ tipo: "sel", ...this.sel }); }
+    });
+    inp.addEventListener("blur", () => setTimeout(() => { if (document.activeElement !== inp) this.commitEdicao(); }, 120));
+    el.addEventListener("dblclick", (ev) => { const t = ev.target.closest(".tabx"); if (t && !$(".tabin", t)) { this.iniciarRenomear(t.dataset.aba); return; } });
+    el.addEventListener("contextmenu", (ev) => { const t = ev.target.closest(".tabx"); if (!t) return; ev.preventDefault(); this.abrirMenu(t.dataset.aba, ev.clientX, ev.clientY); });
+    document.addEventListener("pointerdown", (ev) => { if (!ev.target.closest || !ev.target.closest(".menu")) this.fecharMenu(); });
+    el.addEventListener("dblclick", (ev) => { if (ev.target.closest(".g td") && !this.editaveis) this.toast("Nesta cápsula a gente só explora a tela. Digitar nas células fica para o <b>Módulo 1</b>."); });
+    el.addEventListener("click", (ev) => {
+      const b = ev.target.closest("[data-cmd]");
+      if (b) {
+        const cmd = b.dataset.cmd;
+        if (!this.aplicar(cmd)) this.toast("<b>" + b.title + "</b>: você vai usar esse botão no <b>Módulo " + MODULO_CMD[cmd] + "</b>. Por enquanto funcionam N, I, S e Cor de Preenchimento.");
+        this.emit({ tipo: "cmd", cmd }); return;
+      }
+      if (ev.target.closest("[data-bl-fechar]")) { this.fecharBloco(); return; }
+      if (ev.target.closest("[data-bk-voltar]")) { this.fecharArquivo(); this.emit({ tipo: "arquivo-fechar" }); return; }
+      const sec = ev.target.closest("[data-bk-sec]");
+      if (sec) { this.abrirArquivo(sec.dataset.bkSec); this.emit({ tipo: "arquivo-secao", secao: sec.dataset.bkSec }); return; }
+      const ac = ev.target.closest("[data-bk-acao]");
+      if (ac) { this.acaoArquivo(ac.dataset.bkAcao); return; }
+      const ab = ev.target.closest("[data-bk-abrir]");
+      if (ab) { this.toast("Abriria o arquivo <b>" + ab.dataset.bkAbrir + "</b>. Aqui no curso, ficamos neste."); return; }
+      const g = ev.target.closest("[data-guia]");
+      if (g && g.dataset.guia === "Arquivo") { this.commitEdicao(); this.abrirArquivo(); this.emit({ tipo: "guia", guia: "Arquivo" }); return; }
+      if (g) { if (g.dataset.guia !== "Página Inicial") this.toast("A guia <b>" + g.dataset.guia + "</b> mostraria outros botões. Aqui ficamos na <b>Página Inicial</b>, a mais usada."); this.emit({ tipo: "guia", guia: g.dataset.guia }); return; }
+      const t = ev.target.closest("[data-aba]");
+      if (t && $(".tabin", t)) return;
+      if (t) { this.commitEdicao(); this.trocarAba(t.dataset.aba); this.emit({ tipo: "aba", nome: t.dataset.aba }); return; }
+      if (ev.target.closest("[data-add]")) { this.commitEdicao(); const n = this.novaAba(); if (n) this.emit({ tipo: "nova-aba", nome: n }); return; }
+      if (ev.target.closest("[data-nav]")) { this.toast("Essas setas rolam as abas quando o arquivo tem muitas abas."); return; }
+      const zb = ev.target.closest("[data-zoom]");
+      if (zb) { this.setZoom(this.zoom + (zb.dataset.zoom === "+" ? 10 : -10)); this.emit({ tipo: "zoom", zoom: this.zoom }); return; }
+      if (ev.target.closest(".fxl")) this.toast("O <b>fx</b> abre o assistente de funções. Vamos usar no <b>Módulo 4</b>.");
+    });
+  }
+  // ----- camada de ensino -----
+  alvoEl(t) {
+    if (typeof t !== "string") return t;
+    if (/^[A-G]\d+$/.test(t)) return this.td(t);
+    if (/^[\[.#]/.test(t)) return $(t, this.el);
+    return $('[data-p="' + t + '"]', this.el);
+  }
+  rel(e) { const b = this.el.getBoundingClientRect(), r = e.getBoundingClientRect(); return { x: r.left - b.left, y: r.top - b.top, w: r.width, h: r.height, W: b.width, H: b.height }; }
+  async w(ms) { const g = this.geracao; await espera(ms); if (g !== this.geracao) throw new Error("cancelado"); }
+  spot(t, pad = 3) {
+    const s = $(".spot", this.el);
+    if (!t) { s.classList.remove("on"); return; }
+    const p = this.rel(this.alvoEl(t));
+    Object.assign(s.style, { left: p.x - pad + "px", top: p.y - pad + "px", width: p.w + pad * 2 + "px", height: p.h + pad * 2 + "px" });
+    s.classList.add("on");
+  }
+  balao(t, html) {
+    const b = $(".balao", this.el);
+    if (!t) { b.classList.remove("on"); return; }
+    const p = this.rel(this.alvoEl(t));
+    b.innerHTML = html; b.style.left = "0px"; b.style.top = "0px";
+    const bw = b.offsetWidth, bh = b.offsetHeight;
+    const cx = p.x + Math.min(p.w / 2, 60);
+    const left = Math.max(8, Math.min(p.W - bw - 8, cx - 18));
+    const embaixo = p.y + p.h + bh + 14 < p.H;
+    b.classList.toggle("baixo", embaixo); b.classList.toggle("cima", !embaixo);
+    b.style.left = left + "px";
+    b.style.top = (embaixo ? p.y + p.h + 10 : p.y - bh - 10) + "px";
+    b.style.setProperty("--sx", Math.max(8, Math.min(bw - 20, cx - left - 6)) + "px");
+    b.classList.add("on");
+  }
+  toast(html, tipo = "info", ms = 3200) {
+    const t = $(".toast", this.el);
+    t.innerHTML = html; t.className = "toast " + tipo + " on";
+    clearTimeout(this._tt); this._tt = setTimeout(() => t.classList.remove("on"), ms);
+  }
+  destacar(alvos) { this.limparDestaque(); [].concat(alvos).forEach((a) => { const e = this.alvoEl(a); if (e) e.classList.add("guia"); }); }
+  limparDestaque() { $$(".guia", this.el).forEach((e) => e.classList.remove("guia")); }
+  caderno(html) { const c = $(".caderno", this.el); if (html === null) { c.classList.remove("on"); return; } if (html !== undefined) c.innerHTML = html; c.style.top = $(".xo-fx", this.el).offsetTop + "px"; c.classList.add("on"); }
+  // ----- animação (modo demonstração) -----
+  async moverCursor(t, rapido = false) {
+    const c = $(".cursor", this.el), p = this.rel(this.alvoEl(t));
+    if (rapido) c.style.transitionDuration = ".22s, .22s, .3s";
+    c.style.left = p.x + Math.min(p.w * 0.55, 40) + "px"; c.style.top = p.y + p.h * 0.5 + "px";
+    c.classList.add("on");
+    await this.w(rapido ? 240 : 750);
+    c.style.transitionDuration = "";
+  }
+  anel() { const c = $(".cursor", this.el), a = document.createElement("div"); a.className = "anel"; a.style.left = c.style.left; a.style.top = c.style.top; this.el.appendChild(a); setTimeout(() => a.remove(), 500); }
+  async clicar(t) {
+    await this.moverCursor(t); this.anel();
+    const e = this.alvoEl(t);
+    if (e.matches(".g td")) this.setSel(e.dataset.a);
+    else if (e.dataset.cmd) this.aplicar(e.dataset.cmd);
+    else if (e.dataset.aba) this.trocarAba(e.dataset.aba);
+    else if (e.dataset.zoom) this.setZoom(this.zoom + (e.dataset.zoom === "+" ? 10 : -10));
+    else if (e.dataset.guia === "Arquivo") this.abrirArquivo();
+    else if (e.dataset.guia) { $$("[data-guia]", this.el).forEach((g) => g.classList.toggle("on", g === e)); }
+    else if (e.dataset.bkSec) this.abrirArquivo(e.dataset.bkSec);
+    else if (e.dataset.bkAcao) this.acaoArquivo(e.dataset.bkAcao);
+    else if (e.dataset.bkVoltar !== undefined) this.fecharArquivo();
+    await this.w(380);
+  }
+  async arrastar(a, b) {
+    await this.moverCursor(a); this.anel(); this.setSel(a);
+    await this.w(250);
+    const [c1, r1] = partes(a), [c2, r2] = partes(b);
+    const passos = Math.max(Math.abs(c2 - c1), Math.abs(r2 - r1));
+    for (let i = 1; i <= passos; i++) {
+      const c = COLS[Math.round(c1 + ((c2 - c1) * i) / passos)], r = Math.round(r1 + ((r2 - r1) * i) / passos);
+      await this.moverCursor(c + r, true); this.setSel(a, c + r);
+    }
+    await this.w(300);
+  }
+  async criarAbaAnim() { await this.moverCursor("[data-add]"); this.anel(); const n = this.novaAba(); await this.w(500); return n; }
+  async renomearAnim(nome, novo) {
+    const t = this.tab(nome); await this.moverCursor(t); this.anel(); await this.w(160); this.anel();
+    const inp = this.abrirEdicaoAba(nome); inp.blur && inp.removeAttribute("autofocus");
+    await this.w(500); inp.value = "";
+    for (const ch of novo) { inp.value += ch; await this.w(110); }
+    await this.w(300); await this.tecla("Enter ⏎", 450);
+    inp.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
+    await this.w(400);
+  }
+  async tecla(nome, ms = 700) { const k = $(".key", this.el); k.textContent = nome; k.classList.add("on"); await this.w(ms); k.classList.remove("on"); }
+  async digitar(a, texto, vel = 110) {
+    const t = this.td(a); t.classList.add("edit"); let s = "";
+    for (const ch of texto) { s += ch; t.textContent = s; $(".fb", this.el).textContent = s; await this.w(vel); }
+    await this.w(300);
+  }
+  async confirmar(a, valor) { await this.tecla("Enter ⏎", 550); this.setValor(a, valor); this.flashFormulas(); }
+}
+
+// =============== componentes de exercício (fora da janela) ===============
+function escolha(box, { enun, ops, certo, okMsg, ruimMsg }) {
+  box.innerHTML = '<div class="enun">' + enun + '</div><div class="ops">' + ops.map((o, i) => '<button class="op" data-k="' + i + '">' + o + "</button>").join("") + '</div><div class="out"></div>';
+  $$(".op", box).forEach((b) => (b.onclick = () => {
+    const ok = +b.dataset.k === certo;
+    $$(".op", box).forEach((x) => x.classList.remove("right", "wrong")); b.classList.add(ok ? "right" : "wrong");
+    $(".out", box).innerHTML = ok ? '<div class="fbk ok"><b>Isso! ✅</b>' + okMsg + "</div>" : '<div class="fbk bad"><b>Não é essa.</b>' + (typeof ruimMsg === "function" ? ruimMsg(+b.dataset.k) : ruimMsg) + "</div>";
+  }));
+}
+function resposta(box, { enun, checar, ph = "" }) {
+  box.innerHTML = '<div class="enun">' + enun + '</div><div class="row"><input class="inp" placeholder="' + ph + '" aria-label="Sua resposta"><button class="btn pri">Conferir</button></div><div class="out"></div>';
+  const go = () => { const r = checar($(".inp", box).value.trim()); $(".out", box).innerHTML = '<div class="fbk ' + (r.ok ? "ok" : "bad") + '"><b>' + (r.ok ? "Isso! ✅" : "Ainda não.") + "</b>" + r.msg + "</div>"; };
+  $(".btn", box).onclick = go; $(".inp", box).onkeydown = (e) => { if (e.key === "Enter") go(); };
+}
+const lerNumero = (s) => { const t = s.replace(/[^\d,.-]/g, "").replace(/\.(?=\d{3}\b)/g, "").replace(",", "."); return t === "" ? NaN : Number(t); };
+
+// Lista de tarefas guiadas sobre uma janela interativa (fase "Pratique junto")
+function tarefasGuiadas({ host, tarefas, opcoesJanela = {}, aoTerminar }) {
+  host.innerHTML = '<div class="card"><div class="row" style="justify-content:space-between"><span class="passo-n tn"></span><div class="row"><button class="btn dk">💡 Dica</button><button class="btn rst">↺ Recomeçar</button></div></div><ol class="tarefas"></ol><div class="tout"></div></div><div class="jw" style="margin-top:14px"></div>';
+  let k = 0, erros = 0, nd = 0;
+  const out = (cls, html) => ($(".tout", host).innerHTML = '<div class="fbk ' + cls + '">' + html + "</div>");
+  const lista = () => {
+    $(".tarefas", host).innerHTML = tarefas.map((t, i) => '<li class="' + (i < k ? "ok" : i === k ? "atual" : "") + '">' + t.txt + "</li>").join("");
+    $(".tn", host).textContent = k < tarefas.length ? "Tarefa " + (k + 1) + " de " + tarefas.length : "Todas as tarefas feitas";
+    $(".dk", host).disabled = k >= tarefas.length;
+  };
+  const j = new Janela($(".jw", host), { ...opcoesJanela, interativo: true, aoEvento: (ev, j) => {
+    if (k >= tarefas.length) return;
+    const t = tarefas[k];
+    if (t.teste(ev, j)) {
+      out("ok", "<b>Certo! ✅</b>" + t.ok(j)); j.toast("✓ Certo!", "ok", 1400); j.limparDestaque();
+      k++; erros = 0; nd = 0; lista();
+      if (k === tarefas.length && aoTerminar) $(".tout", host).innerHTML += aoTerminar();
+      return;
+    }
+    const m = t.erro(ev, j);
+    if (m) { erros++; out("bad", "<b>Ainda não.</b>" + m); j.toast("Ainda não. Leia a explicação acima da tela.", "bad", 1800); if (erros >= 2) j.destacar(t.alvo); }
+  } });
+  $(".dk", host).onclick = () => { const t = tarefas[k]; if (!t) return; const d = Math.min(nd, t.dicas.length - 1); out("info", "<b>💡 Dica " + (d + 1) + " de " + t.dicas.length + "</b>" + t.dicas[d]); if (d === t.dicas.length - 1) j.destacar(t.alvo); nd++; };
+  $(".rst", host).onclick = () => { k = 0; erros = 0; nd = 0; j.carregarArquivo(j.arqInicial); $(".tout", host).innerHTML = ""; lista(); };
+  lista();
+  return j;
+}
+
+// Player da fase "Aprenda"
+let passo = 0, token = 0, jDemo = null, PASSOS = [];
+function montaAprenda({ titulo, lead, passos, opcoesJanela = {} }) {
+  PASSOS = passos;
+  main.innerHTML = "<h1>" + titulo + '</h1><p class="lead">' + lead + "</p>" +
+    '<div class="card narr"><div class="row" style="justify-content:space-between"><span class="passo-n" id="pn"></span><div class="row"><button class="btn" id="ant">◀ Voltar</button><button class="btn" id="rep">↺ Repetir</button><button class="btn pri" id="prox">Próximo ▶</button></div></div><div class="dots" id="dots"></div><div class="txt" id="txt"></div></div>' +
+    '<div id="demo"></div><p class="hint" style="margin-top:10px">Dica: vá no seu ritmo. Se algo passou rápido demais, use <b>Repetir</b>.</p>';
+  jDemo = new Janela($("#demo"), opcoesJanela);
+  $("#ant").onclick = () => irPasso(passo - 1);
+  $("#rep").onclick = () => irPasso(passo);
+  $("#prox").onclick = () => { if (passo < PASSOS.length - 1) irPasso(passo + 1); else { concluiFase(0); abrirFase(1); } };
+  irPasso(passo);
+}
+async function irPasso(i) {
+  if (i < 0 || i >= PASSOS.length) return;
+  const meu = ++token; passo = i;
+  const j = jDemo;
+  j.cancelarAnimacoes(); j.carregarArquivo(j.arqInicial);
+  for (let k = 0; k < i; k++) PASSOS[k].fim && PASSOS[k].fim(j);
+  $("#pn").textContent = "Passo " + (i + 1) + " de " + PASSOS.length;
+  $("#dots").innerHTML = PASSOS.map((_, k) => "<i class='" + (k < i ? "v" : k === i ? "at" : "") + "'></i>").join("");
+  $("#txt").innerHTML = PASSOS[i].t;
+  $("#ant").disabled = i === 0;
+  $("#prox").textContent = i === PASSOS.length - 1 ? "Pratique junto ▶" : "Próximo ▶";
+  try { await j.w(250); await PASSOS[i].anim(j); } catch (e) { /* passo interrompido pelo aluno */ }
+  if (meu === token) { j.spot(null); j.balao(null); }
+}
+
+// Navegação entre as 4 fases
+const main = $("#main");
+let FASES = [];
+const feitas = new Set();
+// progresso do aluno: guardado só no navegador dele (sem login, sem servidor)
+function marcarAulaConcluida(id) { if (!id) return; try { const p = JSON.parse(localStorage.getItem("hubredi-progresso") || "{}"); p[id] = Date.now(); localStorage.setItem("hubredi-progresso", JSON.stringify(p)); } catch (e) {} }
+function concluiFase(i) { if (i === 3) marcarAulaConcluida(window.CAPSULA_ID); feitas.add(i); $$(".fase").forEach((b) => b.classList.toggle("done", feitas.has(+b.dataset.f))); }
+function abrirFase(i) { token++; if (jDemo) jDemo.geracao++; $$(".fase").forEach((b) => b.classList.toggle("on", +b.dataset.f === i)); FASES[i](); window.scrollTo(0, 0); }
+function iniciarCapsula(fases) { FASES = fases; $$(".fase").forEach((b) => (b.onclick = () => abrirFase(+b.dataset.f))); abrirFase(0); }

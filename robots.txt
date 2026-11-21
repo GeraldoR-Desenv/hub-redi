@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+Disallow: /fonte/
+Sitemap: https://hub-redi.netlify.app/sitemap.xml
